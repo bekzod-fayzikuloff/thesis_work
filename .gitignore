@@ -41,3 +41,4 @@ wheels/
 *.egg
 
 .github/workflows/test_on_push.yaml
+.pytest_cache/

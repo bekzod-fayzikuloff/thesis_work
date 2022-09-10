@@ -10,6 +10,7 @@ Django = "^4.1"
 djangorestframework = "^3.13.1"
 Markdown = "^3.4.1"
 django-filter = "^22.1"
+psycopg2-binary = "^2.9.3"
 
 [tool.poetry.dev-dependencies]
 black = "^22.6.0"

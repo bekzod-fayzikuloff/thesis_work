@@ -13,8 +13,9 @@ RUN apt-get update \
     git \
     libpq-dev \
     wget \
-  # Cleaning cache:
-  && pip3 install poetry
+  # Cleaning cache: \
+  && /usr/local/bin/python -m pip install --upgrade pip \
+  && pip3 install poetry && echo "Poetry installed successfully"
 
 # set work directory
 WORKDIR /app
@@ -23,6 +24,6 @@ RUN mkdir logs
 COPY pyproject.toml poetry.lock /app/
 
 # Install dependencies
-RUN poetry install
+RUN poetry install --without dev
 
 COPY . /app/
