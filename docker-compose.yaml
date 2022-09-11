@@ -5,8 +5,57 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: bash -c "cd src && poetry run python manage.py runserver 0.0.0.0:8000"
+    command: >
+      bash -c "cd src && poetry run python manage.py runserver 0.0.0.0:8000"
+    restart: unless-stopped
     ports:
       - "8000:8000"
     expose:
       - 8000
+    env_file:
+      - envs/.env
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:14
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5433:5432"
+    env_file:
+      - envs/.env
+
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: >
+      bash -c "cd src && poetry run python manage.py migrate"
+    profiles:
+      - migrate
+    depends_on:
+      - postgres
+    links:
+      - postgres
+    env_file:
+      - envs/.env
+
+  collectstatic:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: >
+      bash -c "cd src && poetry run python manage.py collectstatic --noinput --clear"
+    profiles:
+      - collectstatic
+    depends_on:
+      - postgres
+    links:
+      - postgres
+    env_file:
+      - envs/.env
+
+volumes:
+  postgres_data:
