@@ -48,6 +48,8 @@ services:
       dockerfile: Dockerfile
     command: >
       bash -c "cd src && poetry run python manage.py collectstatic --noinput --clear"
+    profiles:
+      - collectstatic
     depends_on:
       - postgres
     links:
