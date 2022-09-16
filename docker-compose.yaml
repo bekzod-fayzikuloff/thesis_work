@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     command: >
-      bash -c "cd src && poetry run python manage.py runserver 0.0.0.0:8000"
+      sh ./entrypoint.sh
     restart: unless-stopped
     ports:
       - "8000:8000"
@@ -32,7 +32,7 @@ services:
       context: .
       dockerfile: Dockerfile
     command: >
-      bash -c "cd src && poetry run python manage.py migrate"
+      bash -c "cd src && poetry run python src/manage.py migrate"
     profiles:
       - migrate
     depends_on:
@@ -47,7 +47,7 @@ services:
       context: .
       dockerfile: Dockerfile
     command: >
-      bash -c "cd src && poetry run python manage.py collectstatic --noinput --clear"
+      bash -c "cd src && poetry run python src/manage.py collectstatic --noinput --clear"
     profiles:
       - collectstatic
     depends_on:
