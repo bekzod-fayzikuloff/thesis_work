@@ -8,22 +8,6 @@ services:
     command: >
       sh ./entrypoint.sh
     restart: unless-stopped
-    ports:
-      - "8000:8000"
-    expose:
-      - 8000
-    env_file:
-      - envs/.env
-    depends_on:
-      - postgres
-
-  postgres:
-    image: postgres:14
-    restart: unless-stopped
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    ports:
-      - "5433:5432"
     env_file:
       - envs/.env
 
@@ -35,10 +19,6 @@ services:
       bash -c "cd src && poetry run python src/manage.py migrate"
     profiles:
       - migrate
-    depends_on:
-      - postgres
-    links:
-      - postgres
     env_file:
       - envs/.env
 
@@ -50,12 +30,5 @@ services:
       bash -c "cd src && poetry run python src/manage.py collectstatic --noinput --clear"
     profiles:
       - collectstatic
-    depends_on:
-      - postgres
-    links:
-      - postgres
     env_file:
       - envs/.env
-
-volumes:
-  postgres_data:

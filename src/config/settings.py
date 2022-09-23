@@ -4,6 +4,8 @@ from typing import TypeVar
 
 from dotenv import load_dotenv
 
+from .env import database_config
+
 load_dotenv("./envs/.env")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -74,23 +76,8 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # Database
 
-DATABASES_POSTGRES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("DB_NAME"),
-        "USER": os.environ.get("DB_USER"),
-        "PASSWORD": os.environ.get("DB_PASSWORD"),
-        "HOST": os.environ.get("DB_HOST"),
-        "PORT": 5432,
-    }
-}
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
+DATABASES = {"default": database_config.get(os.environ.get("MODE"))}
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
