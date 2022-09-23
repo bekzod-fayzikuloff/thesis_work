@@ -1,4 +1,5 @@
 from functools import lru_cache
+from typing import Any
 
 from django.conf import settings
 from drf_yasg import openapi
@@ -7,7 +8,8 @@ from rest_framework import permissions
 
 
 @lru_cache
-def get_schema_view_():
+def get_schema_view_() -> type[Any]:
+    """Getting docs schema view"""
     docs_access_mode = permissions.AllowAny if settings.DEBUG else permissions.IsAdminUser
     return get_schema_view(
         openapi.Info(
