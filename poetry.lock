@@ -152,6 +152,17 @@ python-versions = ">=3.7"
 Django = ">=3.2"
 
 [[package]]
+name = "django-jazzmin"
+version = "2.5.0"
+description = "Drop-in theme for django admin, that utilises AdminLTE 3 & Bootstrap 4 to make yo' admin look jazzy"
+category = "main"
+optional = false
+python-versions = ">=3.6.2"
+
+[package.dependencies]
+django = ">=2.2"
+
+[[package]]
 name = "djangorestframework"
 version = "3.13.1"
 description = "Web APIs for Django, made easy."
@@ -655,7 +666,7 @@ testing = ["coverage (>=6.2)", "coverage-enable-subprocess (>=1)", "flaky (>=3.7
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "db7c6400fd73aefaa9a080225723c1f15a78945c93d250b922a44dbf88fb08e7"
+content-hash = "b51058a1077f916cdabbbbc56b9e075068621538389209cfcb8f6bfc89962179"
 
 [metadata.files]
 asgiref = [
@@ -689,6 +700,10 @@ coreschema = [
 distlib = []
 django = []
 django-filter = []
+django-jazzmin = [
+    {file = "django-jazzmin-2.5.0.tar.gz", hash = "sha256:2ee5ea548e9d5d6cf6495025d006b063ecae84702304eb90c9c5ef37ba99078a"},
+    {file = "django_jazzmin-2.5.0-py3-none-any.whl", hash = "sha256:6b9f9951eee41f60793a0d2f6f3d57213bd5605ddda7a106acb2bcdec4ef124e"},
+]
 djangorestframework = [
     {file = "djangorestframework-3.13.1-py3-none-any.whl", hash = "sha256:24c4bf58ed7e85d1fe4ba250ab2da926d263cd57d64b03e8dcef0ac683f8b1aa"},
     {file = "djangorestframework-3.13.1.tar.gz", hash = "sha256:0c33407ce23acc68eca2a6e46424b008c9c02eceb8cf18581921d0092bc1f2ee"},
