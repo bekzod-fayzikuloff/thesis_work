@@ -16,7 +16,7 @@ services:
       context: .
       dockerfile: Dockerfile
     command: >
-      bash -c "cd src && poetry run python src/manage.py migrate"
+      bash -c "poetry run python src/manage.py migrate"
     profiles:
       - migrate
     env_file:
@@ -27,7 +27,7 @@ services:
       context: .
       dockerfile: Dockerfile
     command: >
-      bash -c "cd src && poetry run python src/manage.py collectstatic --noinput --clear"
+      bash -c "poetry run python src/manage.py collectstatic --noinput --clear"
     profiles:
       - collectstatic
     env_file:
