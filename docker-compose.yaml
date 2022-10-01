@@ -32,3 +32,40 @@ services:
       - collectstatic
     env_file:
       - envs/.env
+
+  redis:
+    image: "redis:latest"
+    restart: unless-stopped
+    depends_on:
+      - web
+    expose:
+      - 6379
+
+  celery-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: >
+      bash -c "cd src && poetry run celery --app config worker -l INFO"
+    env_file:
+      - envs/.env
+    depends_on:
+      - web
+      - redis
+    volumes:
+      - .:/app
+
+  celery-beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: >
+      bash -c "cd src && poetry run celery --app config beat -l INFO"
+    env_file:
+      - envs/.env
+    depends_on:
+      - web
+      - redis
+      - celery-worker
+    volumes:
+      - .:/app

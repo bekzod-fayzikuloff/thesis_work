@@ -28,7 +28,7 @@ ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(",")
 Package = TypeVar("Package", bound=str)
 PackagesListType = list[Package]
 
-THIRD_PARTY_PACKAGES: PackagesListType = ["drf_yasg", "rest_framework"]
+THIRD_PARTY_PACKAGES: PackagesListType = ["drf_yasg", "rest_framework", "django_celery_results"]
 
 PROJECT_APPS: PackagesListType = ["apps.chat", "apps.users", "apps.api"]
 
@@ -74,12 +74,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-
-# Database
-
-
+############
+# Database #
+############
 DATABASES = {"default": database_config.get(os.environ.get("MODE"))}
 
+##################
+# REST_FRAMEWORK #
+##################
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
@@ -125,8 +127,21 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-# DOCS_SCHEMA
+##########
+# CELERY #
+##########
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND")
+CELERY_TIMEZONE = "Europe/Moscow"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
 
+CELERY_BEAT_SCHEDULE = {}
+
+
+###############
+# DOCS_SCHEMA #
+###############
 SWAGGER_SETTINGS = {
     "SECURITY_DEFINITIONS": {
         "Basic": {"type": "basic"},
