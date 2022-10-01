@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+  web:
+    depends_on:
+      - postgres
+    environment:
+      - MODE=prod
+
+  postgres:
+    image: postgres:14
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5433:5432"
+    env_file:
+      - envs/.env
+
+  migrate:
+    depends_on:
+      - postgres
+    links:
+      - postgres
+
+  collectstatic:
+    depends_on:
+      - postgres
+    links:
+      - postgres
+
+volumes:
+  postgres_data:
