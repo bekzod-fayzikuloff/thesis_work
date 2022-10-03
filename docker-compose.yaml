@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     command: >
-      sh ./entrypoint.sh
+      sh ./scripts/entrypoint.sh
     restart: unless-stopped
     env_file:
       - envs/.env
