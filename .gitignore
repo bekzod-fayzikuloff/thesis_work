@@ -43,4 +43,4 @@ wheels/
 .pytest_cache/
 docker-compose.dev.yaml
 *celerybeat-schedule
-config
+./config

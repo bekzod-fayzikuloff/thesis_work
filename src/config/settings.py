@@ -30,7 +30,7 @@ PackagesListType = list[Package]
 
 THIRD_PARTY_PACKAGES: PackagesListType = ["drf_yasg", "rest_framework", "django_celery_results"]
 
-PROJECT_APPS: PackagesListType = ["apps.chat", "apps.users", "apps.api"]
+PROJECT_APPS: PackagesListType = ["apps.chat", "apps.users", "apps.api", "apps.authentication"]
 
 INSTALLED_APPS = [
     "jazzmin",  # THIRD_PARTY_PACKAGE for customize admin panel
@@ -104,7 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
-
+AUTH_USER_MODEL = "authentication.User"
 
 # Internationalization
 
@@ -115,7 +115,6 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 
