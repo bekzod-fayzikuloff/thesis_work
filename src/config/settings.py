@@ -28,7 +28,12 @@ ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(",")
 Package = TypeVar("Package", bound=str)
 PackagesListType = list[Package]
 
-THIRD_PARTY_PACKAGES: PackagesListType = ["drf_yasg", "rest_framework", "django_celery_results"]
+THIRD_PARTY_PACKAGES: PackagesListType = [
+    "rest_framework",
+    "django_celery_results",
+    "drf_spectacular",
+    "drf_spectacular_sidecar",
+]
 
 PROJECT_APPS: PackagesListType = ["apps.chat", "apps.users", "apps.api", "apps.authentication"]
 
@@ -83,6 +88,7 @@ DATABASES = {"default": database_config.get(os.environ.get("MODE"))}
 # REST_FRAMEWORK #
 ##################
 REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
 }
@@ -155,6 +161,17 @@ DOCS_SCHEMA_TERMS_OF_SERVICE = os.environ.get("DOCS_SCHEMA_TERMS_OF_SERVICE")
 DOCS_SCHEMA_CONTACT_EMAIL = os.environ.get("DOCS_SCHEMA_CONTACT_EMAIL")
 DOCS_SCHEMA_LICENSE = os.environ.get("DOCS_SCHEMA_LICENSE")
 DOCS_SCHEMA_PUBLIC = bool(int(os.environ.get("DOCS_SCHEMA_PUBLIC"), 0))
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": DOCS_SCHEMA_TITLE,
+    "DESCRIPTION": DOCS_SCHEMA_DESCRIPTION,
+    "VERSION": DOCS_SCHEMA_VERSION,
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SWAGGER_UI_DIST": "SIDECAR",  # shorthand to use the sidecar instead
+    "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
+    "REDOC_DIST": "SIDECAR",
+    # OTHER SETTINGS
+}
 
 
 JAZZMIN_SETTINGS = {

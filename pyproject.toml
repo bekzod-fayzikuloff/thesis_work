@@ -39,12 +39,14 @@ Markdown = "^3.4.1"
 django-filter = "^22.1"
 psycopg2-binary = "^2.9.3"
 python-dotenv = "^0.21.0"
-drf-yasg = {extras = ["validation"], version = "^1.21.3"}
 django-jazzmin = "^2.5.0"
 celery = "^5.2.7"
 redis = "^4.3.4"
 django-celery-results = "^2.4.0"
 django-dirtyfields = "^1.8.2"
+djangorestframework-simplejwt = {extras = ["crypto"], version = "^5.2.1"}
+drf-spectacular = {extras = ["sidecar"], version = "^0.24.2"}
+drf-spectacular-sidecar = "^2022.10.1"
 
 [tool.poetry.dev-dependencies]
 black = "^22.6.0"
