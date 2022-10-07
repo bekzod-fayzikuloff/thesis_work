@@ -33,6 +33,7 @@ THIRD_PARTY_PACKAGES: PackagesListType = [
     "django_celery_results",
     "drf_spectacular",
     "drf_spectacular_sidecar",
+    "rest_framework_simplejwt",
 ]
 
 PROJECT_APPS: PackagesListType = ["apps.chat", "apps.users", "apps.api", "apps.authentication"]
@@ -91,6 +92,7 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
+    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_simplejwt.authentication.JWTAuthentication",),
 }
 
 
