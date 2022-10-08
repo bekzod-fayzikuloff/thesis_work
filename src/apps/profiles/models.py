@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 from apps.authentication.models import User
 from common.models import BaseModel
@@ -39,6 +41,12 @@ class Follower(BaseModel):
             models.CheckConstraint(
                 check=(~models.Q(follow_to=models.F("follower"))),
                 name="check_follow_to_self",
-                violation_error_message="User cannot follow to self",
+                violation_error_message="Users cannot follow to themselves.",
             )
         ]
+
+
+@receiver(post_save, sender=User)
+def create_profile(sender, **kwargs) -> None:  # noqa
+    if kwargs.get("created"):
+        Profile.objects.create(user=kwargs.get("instance"))
