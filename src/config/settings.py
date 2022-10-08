@@ -36,7 +36,7 @@ THIRD_PARTY_PACKAGES: PackagesListType = [
     "rest_framework_simplejwt",
 ]
 
-PROJECT_APPS: PackagesListType = ["apps.chat", "apps.users", "apps.api", "apps.authentication"]
+PROJECT_APPS: PackagesListType = ["apps.chat", "apps.users", "apps.api", "apps.authentication", "apps.profiles"]
 
 INSTALLED_APPS = [
     "jazzmin",  # THIRD_PARTY_PACKAGE for customize admin panel
