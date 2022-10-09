@@ -37,7 +37,7 @@ THIRD_PARTY_PACKAGES: PackagesListType = [
     "rest_framework_simplejwt",
 ]
 
-PROJECT_APPS: PackagesListType = ["apps.chat", "apps.users", "apps.api", "apps.authentication", "apps.profiles"]
+PROJECT_APPS: PackagesListType = ["apps.api", "apps.authentication", "apps.profiles"]
 
 INSTALLED_APPS = [
     "jazzmin",  # THIRD_PARTY_PACKAGE for customize admin panel
@@ -224,8 +224,8 @@ JAZZMIN_SETTINGS = {
     # Welcome text on the login screen
     "welcome_sign": "Welcome to the thesis",
     # Copyright on the footer
-    "copyright": "fayzikuloff",
-    "search_model": "auth.User",
+    "copyright": "fayzikuloff.b@gmail.com",
+    "search_model": AUTH_USER_MODEL,
     "user_avatar": None,
     ############
     # Top Menu #
@@ -234,8 +234,10 @@ JAZZMIN_SETTINGS = {
     "topmenu_links": [
         # Url that gets reversed (Permissions can be added)
         {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"name": "Falcon", "url": "https://example.com", "new_window": True},
+        {"app": "profiles"},
         # external url that opens in a new window (Permissions can be added)
-        # {"name": "Support", "url": "https://github.com/farridav/django-jazzmin/issues", "new_window": True},
+        #
         # model admin to link to (Permissions checked against model)
         # App with dropdown menu to all its models pages (Permissions checked against models)
     ],
@@ -256,11 +258,12 @@ JAZZMIN_SETTINGS = {
     # Hide these models when generating side menu (e.g auth.user)
     "hide_models": [],
     # List of apps (and/or models) to base side menu ordering off of (does not need to contain all apps/models)
-    "order_with_respect_to": ["auth"],
+    "order_with_respect_to": ["authentication", "profiles"],
     "icons": {
-        "auth": "fas fa-users-cog",
-        "auth.user": "fas fa-user",
-        "auth.Group": "fas fa-users",
+        "authentication": "fas fa-users-cog",
+        "authentication.user": "fas fa-user",
+        "profiles.profile": "fas fa-user",
+        "profiles.follower": "fas fa-light fa-people-arrows",
     },
     "default_icon_parents": "fas fa-chevron-circle-right",
     "default_icon_children": "fas fa-circle",
@@ -312,7 +315,7 @@ JAZZMIN_UI_TWEAKS = {
     "sidebar_nav_compact_style": False,
     "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": True,
-    "theme": "cyborg",
+    "theme": "default",
     "dark_mode_theme": "darkly",
     "button_classes": {
         "primary": "btn-primary",

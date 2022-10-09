@@ -10,6 +10,7 @@ UserType = TypeVar("UserType", bound=AbstractUser)
 
 class UserManager(BaseUserManager):
     def create_user(self, username: str, email: str, password: Optional[str] = None, **extra_fields) -> UserType:
+        """Create a new user method"""
         if username is None:
             raise TypeError("username must not be None")
         if email is None:
@@ -22,6 +23,7 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, username: str, email: str, password: str, **extra_fields) -> UserType:
+        """Create a new user with superuser permissions"""
         if password is None:
             raise TypeError("password must not be None")
         extra_fields.setdefault("is_staff", True)

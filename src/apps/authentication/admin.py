@@ -1,4 +1,7 @@
+from typing import Type
+
 from django.contrib import admin
+from django.forms import BaseModelForm
 
 from .forms import CustomUserChangeForm, CustomUserCreateForm
 from .models import User
@@ -16,7 +19,7 @@ class UserAdmin(admin.ModelAdmin):
     )
     search_fields = ("username", "email")
 
-    def get_fieldsets(self, request, obj=None):
+    def get_fieldsets(self, request, obj=None) -> list[tuple[None, dict[str, list]]]:
         if not obj:
             self.fieldsets = (
                 (None, {"classes": ("wide",), "fields": ("email", "username", "password", "is_staff", "is_active")}),
@@ -28,7 +31,7 @@ class UserAdmin(admin.ModelAdmin):
             )
         return super().get_fieldsets(request, obj)
 
-    def get_form(self, request, obj=None, change=False, **kwargs):
+    def get_form(self, request, obj=None, change=False, **kwargs) -> Type[BaseModelForm]:
         if not obj:
             self.form = self.add_form
         else:
