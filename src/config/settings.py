@@ -37,7 +37,7 @@ THIRD_PARTY_PACKAGES: PackagesListType = [
     "rest_framework_simplejwt",
 ]
 
-PROJECT_APPS: PackagesListType = ["apps.api", "apps.authentication", "apps.profiles"]
+PROJECT_APPS: PackagesListType = ["apps.api", "apps.chats", "apps.authentication", "apps.profiles"]
 
 INSTALLED_APPS = [
     "jazzmin",  # THIRD_PARTY_PACKAGE for customize admin panel
@@ -129,6 +129,9 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 # Default primary key field type
 
