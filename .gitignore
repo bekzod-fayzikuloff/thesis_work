@@ -44,3 +44,4 @@ wheels/
 docker-compose.dev.yaml
 *celerybeat-schedule
 config
+src/media
