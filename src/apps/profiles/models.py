@@ -22,8 +22,8 @@ class Profile(BaseModel):
     class Meta:
         """Metaclass with table representation info."""
 
-        verbose_name = "Profile"
-        verbose_name_plural = "Profiles"
+        verbose_name = "Профиль"
+        verbose_name_plural = "Профили"
 
 
 class PostMedia(BaseModel):
@@ -37,6 +37,10 @@ class PostMedia(BaseModel):
 
     def __str__(self) -> str:
         return f"Posts {self.id} media"
+
+    class Meta:
+        verbose_name = "Медия поста"
+        verbose_name_plural = "Медия постов"
 
 
 class PostsGroup(models.Model):
@@ -82,8 +86,8 @@ class Follower(BaseModel):
         return f"{self.follower} follow to {self.follow_to}"
 
     class Meta:
-        verbose_name = "Follower"
-        verbose_name_plural = "Followers"
+        verbose_name = "Подписчик"
+        verbose_name_plural = "Подписчики"
         unique_together = (("follower", "follow_to"),)
         constraints = [
             models.CheckConstraint(

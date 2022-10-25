@@ -35,6 +35,10 @@ class Media(BaseModel):
     def __str__(self) -> str:
         return f"Message({self.id}) media"
 
+    class Meta:
+        verbose_name = "Meдия сообщения"
+        verbose_name_plural = "Медия сообщений"
+
 
 class Message(BaseModel):
     """Описание таблицы сообщение"""
