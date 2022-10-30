@@ -239,6 +239,7 @@ JAZZMIN_SETTINGS = {
         {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
         {"name": "Falcon", "url": "https://example.com", "new_window": True},
         {"app": "profiles"},
+        {"app": "chats"},
         # external url that opens in a new window (Permissions can be added)
         #
         # model admin to link to (Permissions checked against model)
@@ -261,12 +262,25 @@ JAZZMIN_SETTINGS = {
     # Hide these models when generating side menu (e.g auth.user)
     "hide_models": [],
     # List of apps (and/or models) to base side menu ordering off of (does not need to contain all apps/models)
-    "order_with_respect_to": ["authentication", "profiles"],
+    "order_with_respect_to": ["authentication", "profiles", "chats"],
     "icons": {
         "authentication": "fas fa-users-cog",
         "authentication.user": "fas fa-user",
+        #
         "profiles.profile": "fas fa-user",
         "profiles.follower": "fas fa-light fa-people-arrows",
+        "profiles.postsgroup": "fas fa-regular fa-layer-group",
+        "profiles.postmedia": "fas fa-duotone fa-images",
+        "profiles.post": "fas fa-duotone fa-plus",
+        "profiles.comment": "fas fa-sharp fa-solid fa-comment-dots",
+        "profiles.reaction": "fas fa-regular fa-thumbs-up",
+        #
+        "chats.chat": "fas fa-regular fa-spa",
+        "chats.privatechat": "fas fa-duotone fa-plus",
+        "chats.media": "fas fa-duotone fa-images",
+        "chats.message": "fas fa-regular fa-envelope",
+        "chats.elected": "fas fa-duotone fa-check-double"
+
     },
     "default_icon_parents": "fas fa-chevron-circle-right",
     "default_icon_children": "fas fa-circle",

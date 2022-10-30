@@ -76,6 +76,38 @@ class Post(BaseModel):
         verbose_name_plural = "Посты"
 
 
+class Comment(BaseModel):
+    """Описание таблицы комментариев"""
+
+    content = models.TextField(max_length=500, db_index=True)
+    creator = models.ForeignKey(to=Profile, on_delete=models.CASCADE)
+    post = models.ForeignKey(to=Post, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return f"Comment by {self.creator.user.username} to {self.post}"
+
+    class Meta:
+        verbose_name = "Комментарий"
+        verbose_name_plural = "Комментарии"
+
+
+class Reaction(BaseModel):
+    """Описание таблицы реакции"""
+
+    creator = models.ForeignKey(to=Profile, on_delete=models.CASCADE)
+    post = models.ForeignKey(to=Post, on_delete=models.CASCADE)
+
+    is_positive = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Reaction by {self.creator.user.username} to {self.post}"
+
+    class Meta:
+        verbose_name = "Реакция"
+        verbose_name_plural = "Реакции"
+
+
 class Follower(BaseModel):
     """Описание таблицы `фолловеров`"""
 
