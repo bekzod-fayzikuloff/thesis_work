@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from pathlib import Path
 from typing import TypeVar
 
@@ -28,9 +29,15 @@ ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(",")
 Package = TypeVar("Package", bound=str)
 PackagesListType = list[Package]
 
-THIRD_PARTY_PACKAGES: PackagesListType = ["drf_yasg", "rest_framework", "django_celery_results"]
+THIRD_PARTY_PACKAGES: PackagesListType = [
+    "rest_framework",
+    "django_celery_results",
+    "drf_spectacular",
+    "drf_spectacular_sidecar",
+    "rest_framework_simplejwt",
+]
 
-PROJECT_APPS: PackagesListType = ["apps.chat", "apps.users", "apps.api"]
+PROJECT_APPS: PackagesListType = ["apps.api", "apps.chats", "apps.authentication", "apps.profiles"]
 
 INSTALLED_APPS = [
     "jazzmin",  # THIRD_PARTY_PACKAGE for customize admin panel
@@ -83,8 +90,10 @@ DATABASES = {"default": database_config.get(os.environ.get("MODE"))}
 # REST_FRAMEWORK #
 ##################
 REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
+    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_simplejwt.authentication.JWTAuthentication",),
 }
 
 
@@ -104,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
-
+AUTH_USER_MODEL = "authentication.User"
 
 # Internationalization
 
@@ -116,15 +125,44 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 
 STATIC_URL = "static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
 # Default primary key field type
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+#############
+# SIMPLEJWT #
+#############
+SIMPLE_JWT_SIGNING_KEY = os.environ.get("SIMPLE_JWT_SIGNING_KEY")
+
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=90),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SIMPLE_JWT_SIGNING_KEY,
+    "VERIFYING_KEY": None,
+    "AUDIENCE": None,
+    "ISSUER": None,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "TOKEN_TYPE_CLAIM": "token_type",
+    "JTI_CLAIM": "jti",
+    "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
+    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
+}
 
 
 ##########
@@ -157,6 +195,17 @@ DOCS_SCHEMA_CONTACT_EMAIL = os.environ.get("DOCS_SCHEMA_CONTACT_EMAIL")
 DOCS_SCHEMA_LICENSE = os.environ.get("DOCS_SCHEMA_LICENSE")
 DOCS_SCHEMA_PUBLIC = bool(int(os.environ.get("DOCS_SCHEMA_PUBLIC"), 0))
 
+SPECTACULAR_SETTINGS = {
+    "TITLE": DOCS_SCHEMA_TITLE,
+    "DESCRIPTION": DOCS_SCHEMA_DESCRIPTION,
+    "VERSION": DOCS_SCHEMA_VERSION,
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SWAGGER_UI_DIST": "SIDECAR",  # shorthand to use the sidecar instead
+    "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
+    "REDOC_DIST": "SIDECAR",
+    # OTHER SETTINGS
+}
+
 
 JAZZMIN_SETTINGS = {
     # title of the window (Will default to current_admin_site.site_title if absent or None)
@@ -178,8 +227,8 @@ JAZZMIN_SETTINGS = {
     # Welcome text on the login screen
     "welcome_sign": "Welcome to the thesis",
     # Copyright on the footer
-    "copyright": "fayzikuloff",
-    "search_model": "auth.User",
+    "copyright": "fayzikuloff.b@gmail.com",
+    "search_model": AUTH_USER_MODEL,
     "user_avatar": None,
     ############
     # Top Menu #
@@ -188,8 +237,11 @@ JAZZMIN_SETTINGS = {
     "topmenu_links": [
         # Url that gets reversed (Permissions can be added)
         {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"name": "Falcon", "url": "https://example.com", "new_window": True},
+        {"app": "profiles"},
+        {"app": "chats"},
         # external url that opens in a new window (Permissions can be added)
-        # {"name": "Support", "url": "https://github.com/farridav/django-jazzmin/issues", "new_window": True},
+        #
         # model admin to link to (Permissions checked against model)
         # App with dropdown menu to all its models pages (Permissions checked against models)
     ],
@@ -210,11 +262,25 @@ JAZZMIN_SETTINGS = {
     # Hide these models when generating side menu (e.g auth.user)
     "hide_models": [],
     # List of apps (and/or models) to base side menu ordering off of (does not need to contain all apps/models)
-    "order_with_respect_to": ["auth"],
+    "order_with_respect_to": ["authentication", "profiles", "chats"],
     "icons": {
-        "auth": "fas fa-users-cog",
-        "auth.user": "fas fa-user",
-        "auth.Group": "fas fa-users",
+        "authentication": "fas fa-users-cog",
+        "authentication.user": "fas fa-user",
+        #
+        "profiles.profile": "fas fa-user",
+        "profiles.follower": "fas fa-light fa-people-arrows",
+        "profiles.postsgroup": "fas fa-regular fa-layer-group",
+        "profiles.postmedia": "fas fa-duotone fa-images",
+        "profiles.post": "fas fa-duotone fa-plus",
+        "profiles.comment": "fas fa-sharp fa-solid fa-comment-dots",
+        "profiles.reaction": "fas fa-regular fa-thumbs-up",
+        #
+        "chats.chat": "fas fa-regular fa-spa",
+        "chats.privatechat": "fas fa-duotone fa-plus",
+        "chats.media": "fas fa-duotone fa-images",
+        "chats.message": "fas fa-regular fa-envelope",
+        "chats.elected": "fas fa-duotone fa-check-double"
+
     },
     "default_icon_parents": "fas fa-chevron-circle-right",
     "default_icon_children": "fas fa-circle",
@@ -266,7 +332,7 @@ JAZZMIN_UI_TWEAKS = {
     "sidebar_nav_compact_style": False,
     "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": True,
-    "theme": "cyborg",
+    "theme": "default",
     "dark_mode_theme": "darkly",
     "button_classes": {
         "primary": "btn-primary",
