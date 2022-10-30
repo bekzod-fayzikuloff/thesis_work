@@ -51,6 +51,8 @@ class User(BaseModel, AbstractUser):
 
     class Meta:
         ordering = ("-created_at",)
+        verbose_name = "Пользователь"
+        verbose_name_plural = "Пользователи"
 
     def __str__(self) -> str:
         return f"{self.username}({self.email})"

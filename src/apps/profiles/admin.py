@@ -25,13 +25,15 @@ class FollowerAdmin(admin.ModelAdmin):
 class PostAdmin(admin.ModelAdmin):
     search_fields = ("creator__user__username", "creator__user__email", "description")
     list_filter = ("is_active",)
+    filter_horizontal = ("medias",)
 
 
 @admin.register(PostMedia)
 class PostMediaAdmin(admin.ModelAdmin):
-    pass
+    list_display_links = ("__str__",)
 
 
 @admin.register(PostsGroup)
 class PostsGroupAdmin(admin.ModelAdmin):
-    pass
+    list_display = ("title",)
+    search_fields = ("title", "creator__user__username")

@@ -19,6 +19,10 @@ class Chat(BaseModel):
     description = models.TextField("Описание", max_length=500, blank=True)
     members = models.ManyToManyField(to=Profile, blank=True, related_name="chats", verbose_name="Участники")
 
+    @property
+    def flatten_members(self):
+        return ", ".join(member.user.username for member in self.members.filter()[:10])
+
     class Meta:
         verbose_name = "Чат"
         verbose_name_plural = "Чаты"
@@ -28,6 +32,7 @@ class Chat(BaseModel):
 
 
 class PrivateChat(BaseModel):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     first_member = models.ForeignKey(
         Profile, on_delete=models.SET_NULL, null=True, verbose_name="Первый участник", related_name="+"
     )
@@ -42,6 +47,9 @@ class PrivateChat(BaseModel):
             if privatechat.id != self.id:
                 raise PrivateChatAlreadyExistsError("Chat with same users already exists")
         super().save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+
+    def __str__(self) -> str:
+        return f"Private chat with [{self.first_member}, {self.second_member}]"
 
     class Meta:
         verbose_name = "Личное"
@@ -80,16 +88,16 @@ class Message(BaseModel):
     content = models.TextField("Содержимое", max_length=1000, blank=True)
     maker = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="messages", related_query_name="message")
     chat_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, limit_choices_to=limit)
-    chat_id = models.BigIntegerField()
+    chat_id = models.UUIDField()
     chat_object = GenericForeignKey("chat_type", "chat_id")
     answer = models.ForeignKey(
         "self", on_delete=models.SET_NULL, null=True, blank=True, related_name="replies", related_query_name="reply"
     )
-    medias = models.ManyToManyField(to=Media, symmetrical=False)
+    medias = models.ManyToManyField(to=Media, related_name="messages", related_query_name="messages", blank=True)
     is_active = models.BooleanField(default=False)
 
     def __str__(self) -> str:
-        return f"Message({self.id}) to chat({self.chat_id})"
+        return f"Message({self.id}) to chat({self.chat_type.get_object_for_this_type(id=self.chat_id)})"
 
     class Meta:
         verbose_name = "Сообщение"

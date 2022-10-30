@@ -15,23 +15,36 @@ class MessageInline(GenericTabularInline):
 @admin.register(Chat)
 class ChatAdmin(admin.ModelAdmin):
     inlines = [MessageInline]
+    list_display = ("title", "flatten_members")
+    search_fields = ("title", "description", "members__user__username")
+    filter_horizontal = ("members",)
 
 
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ("title", "description", "members__user__username", "members__user__email")
+    filter_horizontal = ("medias",)
 
 
 @admin.register(Media)
 class MediaAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ("messages__content", "messages__maker__user__username")
 
 
 @admin.register(Elected)
 class ElectedAdmin(admin.ModelAdmin):
-    pass
+    filter_horizontal = ("messages",)
+    search_fields = ("messages__content", "creator__user__username")
 
 
 @admin.register(PrivateChat)
 class PrivateChatAdmin(admin.ModelAdmin):
+    search_fields = (
+        "first_member__user__username",
+        "first_member__user__email",
+        "second_member__user__username",
+        "second_member__user__email",
+    )
+
+    inlines = [MessageInline]
     form = PrivateChatForm
