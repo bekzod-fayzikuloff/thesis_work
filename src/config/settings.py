@@ -37,7 +37,7 @@ THIRD_PARTY_PACKAGES: PackagesListType = [
     "rest_framework_simplejwt",
 ]
 
-PROJECT_APPS: PackagesListType = ["apps.api", "apps.chats", "apps.authentication", "apps.profiles"]
+PROJECT_APPS: PackagesListType = ["apps.api", "apps.chats", "apps.posts", "apps.authentication", "apps.profiles"]
 
 INSTALLED_APPS = [
     "jazzmin",  # THIRD_PARTY_PACKAGE for customize admin panel
@@ -240,6 +240,7 @@ JAZZMIN_SETTINGS = {
         {"name": "Falcon", "url": "https://example.com", "new_window": True},
         {"app": "profiles"},
         {"app": "chats"},
+        {"app": "posts"},
         # external url that opens in a new window (Permissions can be added)
         #
         # model admin to link to (Permissions checked against model)
@@ -262,18 +263,19 @@ JAZZMIN_SETTINGS = {
     # Hide these models when generating side menu (e.g auth.user)
     "hide_models": [],
     # List of apps (and/or models) to base side menu ordering off of (does not need to contain all apps/models)
-    "order_with_respect_to": ["authentication", "profiles", "chats"],
+    "order_with_respect_to": ["authentication", "profiles", "posts", "chats"],
     "icons": {
         "authentication": "fas fa-users-cog",
         "authentication.user": "fas fa-user",
         #
         "profiles.profile": "fas fa-user",
         "profiles.follower": "fas fa-light fa-people-arrows",
-        "profiles.postsgroup": "fas fa-regular fa-layer-group",
-        "profiles.postmedia": "fas fa-duotone fa-images",
-        "profiles.post": "fas fa-duotone fa-plus",
-        "profiles.comment": "fas fa-sharp fa-solid fa-comment-dots",
-        "profiles.reaction": "fas fa-regular fa-thumbs-up",
+        #
+        "posts.postsgroup": "fas fa-regular fa-layer-group",
+        "posts.postmedia": "fas fa-duotone fa-images",
+        "posts.post": "fas fa-duotone fa-plus",
+        "posts.comment": "fas fa-sharp fa-solid fa-comment-dots",
+        "posts.reaction": "fas fa-regular fa-thumbs-up",
         #
         "chats.chat": "fas fa-regular fa-spa",
         "chats.privatechat": "fas fa-duotone fa-plus",

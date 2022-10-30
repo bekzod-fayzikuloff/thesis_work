@@ -1,7 +1,7 @@
 from django import forms
 
-from apps.chats.exceptions import PrivateChatAlreadyExistsError
 from apps.chats.models import PrivateChat
+from common.exceptions import PrivateChatAlreadyExistsError
 
 
 class PrivateChatForm(forms.ModelForm):

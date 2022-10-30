@@ -5,8 +5,8 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
-from apps.chats.exceptions import PrivateChatAlreadyExistsError
 from apps.profiles.models import Profile
+from common.exceptions import PrivateChatAlreadyExistsError
 from common.models import BaseModel
 from common.validators import validate_file_size
 

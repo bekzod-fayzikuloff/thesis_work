@@ -10,5 +10,6 @@ docs_urlpatterns = [
 urlpatterns = [
     path("auth/", include("apps.authentication.urls")),
     path("chats/", include("apps.chats.urls")),
+    path("profiles/", include("apps.profiles.urls")),
     path("docs/", include(docs_urlpatterns)),
 ]
