@@ -9,6 +9,7 @@ from common.models import BaseModel
 class Profile(BaseModel):
     """Описание таблицы профиля"""
 
+    avatar = models.ImageField(upload_to="profiles/media/%Y/%m/%d/", blank=True, null=True)
     user = models.OneToOneField(to=User, on_delete=models.CASCADE)
     description = models.TextField(blank=True, max_length=1000)
 
