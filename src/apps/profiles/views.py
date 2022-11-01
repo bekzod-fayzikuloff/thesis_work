@@ -8,8 +8,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from .models import Profile
+from .models import Follower, Profile
 from .serializers.profiles import (
+    FollowerListSerializer,
     ProfileListSerializer,
     ProfileSerializer,
     ProfileSerializerType,
@@ -27,6 +28,22 @@ class ProfileViewSet(
     @extend_schema(responses={status.HTTP_200_OK: ProfileListSerializer}, methods=["GET"])
     def list(self, request, *args, **kwargs) -> Response:
         return super().list(request, *args, **kwargs)
+
+    @extend_schema(methods=["GET"])
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @extend_schema(methods=["GET"])
+    @action(methods=["GET"], detail=True)
+    def followers(self, request: Request, *args, **kwargs) -> Response:
+        followers_qs = Follower.objects.filter(follow_to=self.get_object())
+        return Response(data=self.get_serializer(followers_qs, many=True).data)
+
+    @extend_schema(methods=["GET"])
+    @action(methods=["GET"], detail=True)
+    def followed(self, request: Request, *args, **kwargs) -> Response:
+        followed_qs = Follower.objects.filter(follower=self.get_object())
+        return Response(data=self.get_serializer(followed_qs, many=True).data)
 
     @extend_schema(methods=["GET"])
     @action(methods=["GET"], detail=False, url_path=r"me")
@@ -63,6 +80,10 @@ class ProfileViewSet(
                 return ProfileListSerializer
             case "update_profile":
                 return ProfileUpdateSerializer
+            case "followers":
+                return FollowerListSerializer
+            case "followed":
+                return FollowerListSerializer
             case _:
                 return ProfileSerializer
 
@@ -70,3 +91,12 @@ class ProfileViewSet(
     def perform_delete(instance: Profile) -> None:
         instance.user.delete()
         instance.delete()
+
+    def get_object(self) -> Profile:
+        return super().get_object()
+
+
+class FollowerViewSet(mixins.DestroyModelMixin, viewsets.GenericViewSet):
+    queryset = Follower.objects.all()
+    serializer_class = FollowerListSerializer
+    permission_classes = [IsAuthenticated]
