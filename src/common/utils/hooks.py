@@ -6,6 +6,8 @@ from django.conf import settings
 
 from common.exceptions import InvalidModuleObjectStringPatternException, ModuleNotFound
 
+TEST_OBJECT = 42
+
 
 def include_object(namespace: str) -> Any:
     """Интерпретация значение строки которое считаться как модуль
