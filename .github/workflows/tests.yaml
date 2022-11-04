@@ -44,4 +44,3 @@ jobs:
         env:
           ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
           CORS_ORIGIN_WHITELIST: ${{ secrets.CORS_ORIGIN_WHITELIST }}
-          DOCS_SCHEMA_PUBLIC: ${{ secrets.DOCS_SCHEMA_PUBLIC }}
