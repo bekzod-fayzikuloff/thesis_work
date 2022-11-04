@@ -42,6 +42,7 @@ jobs:
 
       - run: poetry run pytest
         env:
+          SECRET_KEY: ${{secrets.SECRET_KEY}}
           ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
           CORS_ORIGIN_WHITELIST: ${{ secrets.CORS_ORIGIN_WHITELIST }}
           DEBUG: ${{secrets.DEBUG}}
