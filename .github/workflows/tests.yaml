@@ -43,3 +43,4 @@ jobs:
       - run: poetry run pytest
         env:
           ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
+          CORS_ORIGIN_WHITELIST: ${{ secrets.CORS_ORIGIN_WHITELIST }}
