@@ -8,6 +8,9 @@ on:
 
 jobs:
   run_tests:
+    envs:
+      ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
+
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -38,8 +41,5 @@ jobs:
         if: steps.cache-deps.outputs.cache-hit != 'true'
 
       - run: poetry install --no-interaction
-
-      - envs:
-        ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
 
       - run: poetry run pytest
