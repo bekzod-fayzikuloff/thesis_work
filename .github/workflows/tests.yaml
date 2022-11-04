@@ -8,8 +8,6 @@ on:
 
 jobs:
   run_tests:
-    envs:
-      ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
 
     runs-on: ubuntu-latest
     steps:
@@ -43,3 +41,5 @@ jobs:
       - run: poetry install --no-interaction
 
       - run: poetry run pytest
+        env:
+          ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
