@@ -30,6 +30,7 @@ Package = TypeVar("Package", bound=str)
 PackagesListType = list[Package]
 
 THIRD_PARTY_PACKAGES: PackagesListType = [
+    "corsheaders",
     "rest_framework",
     "django_celery_results",
     "drf_spectacular",
@@ -54,6 +55,9 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+
+    "corsheaders.middleware.CorsMiddleware",
+
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -136,6 +140,15 @@ MEDIA_URL = '/media/'
 # Default primary key field type
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+########
+# CORS #
+########
+
+CORS_ORIGIN_ALLOW_ALL = bool(int(os.environ.get("CORS_ORIGIN_ALLOW_ALL", 0)))
+
+CORS_ORIGIN_WHITELIST = os.environ.get("CORS_ORIGIN_WHITELIST").split(",")
 
 #############
 # SIMPLEJWT #

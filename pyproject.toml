@@ -48,6 +48,7 @@ djangorestframework-simplejwt = {extras = ["crypto"], version = "^5.2.1"}
 drf-spectacular = {extras = ["sidecar"], version = "^0.24.2"}
 drf-spectacular-sidecar = "^2022.10.1"
 Pillow = "^9.3.0"
+django-cors-headers = "^3.13.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.6.0"

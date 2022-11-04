@@ -268,6 +268,17 @@ python-versions = "*"
 celery = ">=5.2.3,<6.0"
 
 [[package]]
+name = "django-cors-headers"
+version = "3.13.0"
+description = "django-cors-headers is a Django application for handling the server headers required for Cross-Origin Resource Sharing (CORS)."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+Django = ">=3.2"
+
+[[package]]
 name = "django-dirtyfields"
 version = "1.8.2"
 description = "Tracking dirty fields on a Django model instance."
@@ -859,7 +870,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "c4e89174fda7e028ab5f07ee4493a6855ecfd4813fab379b4722236ea6394aaa"
+content-hash = "dfec58410c0d7cc32eb8173be1f2190b4af3ed48a210c2339ee5c6e7f507fa12"
 
 [metadata.files]
 amqp = [
@@ -914,6 +925,7 @@ deprecated = [
 distlib = []
 django = []
 django-celery-results = []
+django-cors-headers = []
 django-dirtyfields = []
 django-filter = []
 django-jazzmin = [
