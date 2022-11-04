@@ -39,4 +39,7 @@ jobs:
 
       - run: poetry install --no-interaction
 
+      - envs:
+        ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
+
       - run: poetry run pytest
