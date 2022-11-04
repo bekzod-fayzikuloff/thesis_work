@@ -44,3 +44,29 @@ jobs:
         env:
           ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
           CORS_ORIGIN_WHITELIST: ${{ secrets.CORS_ORIGIN_WHITELIST }}
+          DEBUG: ${{secrets.DEBUG}}
+          MODE: ${{secrets.MODE}}
+
+          DB_HOST: ${{secrets.DB_HOST}}
+          DB_NAME: ${{secrets.DB_NAME}}
+          DB_USER: ${{secrets.DB_USER}}
+          DB_PASSWORD: ${{secrets.DB_PASSWORD}}
+
+          POSTGRES_HOST_AUTH_METHOD: ${{secrets.POSTGRES_HOST_AUTH_METHOD}}
+          POSTGRES_USER: ${{secrets.POSTGRES_USER}}
+          POSTGRES_PASSWORD: ${{secrets.POSTGRES_PASSWORD}}
+          POSTGRES_DB: ${{secrets.POSTGRES_DB}}
+
+          DOCS_SCHEMA_TITLE: ${{secrets.DOCS_SCHEMA_TITLE}}
+          DOCS_SCHEMA_DESCRIPTION: ${{secrets.DOCS_SCHEMA_DESCRIPTION}}
+          DOCS_SCHEMA_VERSION: ${{secrets.DOCS_SCHEMA_VERSION}}
+          DOCS_SCHEMA_TERMS_OF_SERVICE: ${{secrets.DOCS_SCHEMA_TERMS_OF_SERVICE}}
+          DOCS_SCHEMA_CONTACT_EMAIL: ${{secrets.DOCS_SCHEMA_CONTACT_EMAIL}}
+          DOCS_SCHEMA_LICENSE: ${{secrets.DOCS_SCHEMA_LICENSE}}
+          DOCS_SCHEMA_PUBLIC: ${{secrets.DOCS_SCHEMA_PUBLIC}}
+
+          CORS_ORIGIN_ALLOW_ALL: ${{secrets.CORS_ORIGIN_ALLOW_ALL}}
+
+          CELERY_BROKER_URL: ${{secrets.CELERY_BROKER_URL}}
+          CELERY_RESULT_BACKEND: ${{secrets.CELERY_RESULT_BACKEND}}
+          SIMPLE_JWT_SIGNING_KEY: ${{secrets.SIMPLE_JWT_SIGNING_KEY}}
