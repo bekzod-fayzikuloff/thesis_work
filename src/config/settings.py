@@ -36,11 +36,15 @@ THIRD_PARTY_PACKAGES: PackagesListType = [
     "drf_spectacular",
     "drf_spectacular_sidecar",
     "rest_framework_simplejwt",
+    "channels",
 ]
 
-PROJECT_APPS: PackagesListType = ["apps.api", "apps.chats", "apps.posts", "apps.authentication", "apps.profiles"]
+PROJECT_APPS: PackagesListType = [
+    "apps.api", "apps.chats", "apps.posts", "apps.authentication", "apps.profiles", "apps.calls"
+]
 
 INSTALLED_APPS = [
+    "daphne",
     "jazzmin",  # THIRD_PARTY_PACKAGE for customize admin panel
     "django.contrib.admin",
     "django.contrib.auth",
@@ -84,6 +88,18 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "config.wsgi.application"
+
+############
+# CHANNELS #
+############
+ASGI_APPLICATION = 'config.asgi.application'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
+
 
 ############
 # Database #
