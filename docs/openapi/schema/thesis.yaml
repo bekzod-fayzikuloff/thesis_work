@@ -1,0 +1,1067 @@
+openapi: 3.0.3
+info:
+  title: Falcon
+  version: '1.0'
+  description: Social network
+paths:
+  /api/auth/register/:
+    post:
+      operationId: auth_register_create
+      description: Register view
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Register'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Register'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Register'
+          description: ''
+  /api/auth/token/:
+    post:
+      operationId: auth_token_create
+      description: SignInView with custom token claims
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInToken'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SignInToken'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SignInToken'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignInToken'
+          description: ''
+  /api/auth/token/refresh/:
+    post:
+      operationId: auth_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/auth/token/verify/:
+    post:
+      operationId: auth_token_verify_create
+      description: |-
+        Takes a token and indicates if it is valid.  This view provides no
+        information about a token's fitness for a particular use.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenVerify'
+          description: ''
+  /api/chats/:
+    get:
+      operationId: chats_retrieve
+      tags:
+      - chats
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/comments/:
+    post:
+      operationId: comments_create
+      tags:
+      - comments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CommentCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CommentCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentCreate'
+          description: ''
+  /api/comments/{id}/:
+    put:
+      operationId: comments_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          title: ID записи
+        description: A unique integer value identifying this Комментарий.
+        required: true
+      tags:
+      - comments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CommentUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CommentUpdate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentCreate'
+          description: ''
+    patch:
+      operationId: comments_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          title: ID записи
+        description: A unique integer value identifying this Комментарий.
+        required: true
+      tags:
+      - comments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCommentUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCommentUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCommentUpdate'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentCreate'
+          description: ''
+    delete:
+      operationId: comments_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          title: ID записи
+        description: A unique integer value identifying this Комментарий.
+        required: true
+      tags:
+      - comments
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/followers/:
+    post:
+      operationId: followers_create
+      tags:
+      - followers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FollowerCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FollowerCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FollowerCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FollowerCreate'
+          description: ''
+  /api/followers/{id}/:
+    delete:
+      operationId: followers_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          title: ID записи
+        description: A unique integer value identifying this Подписчик.
+        required: true
+      tags:
+      - followers
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/posts/:
+    get:
+      operationId: posts_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - posts
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPostList'
+          description: ''
+    post:
+      operationId: posts_create
+      tags:
+      - posts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PostCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PostCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostCreate'
+          description: ''
+  /api/posts/{id}/:
+    get:
+      operationId: posts_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          title: ID записи
+        description: A unique integer value identifying this Пост.
+        required: true
+      tags:
+      - posts
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+          description: ''
+    put:
+      operationId: posts_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          title: ID записи
+        description: A unique integer value identifying this Пост.
+        required: true
+      tags:
+      - posts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PostUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PostUpdate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostUpdate'
+          description: ''
+    patch:
+      operationId: posts_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          title: ID записи
+        description: A unique integer value identifying this Пост.
+        required: true
+      tags:
+      - posts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPostUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPostUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPostUpdate'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostUpdate'
+          description: ''
+    delete:
+      operationId: posts_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          title: ID записи
+        description: A unique integer value identifying this Пост.
+        required: true
+      tags:
+      - posts
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/posts/medias/:
+    post:
+      operationId: posts_medias_create
+      tags:
+      - posts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostMediaCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PostMediaCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PostMediaCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostMediaCreate'
+          description: ''
+  /api/profiles/:
+    get:
+      operationId: profiles_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - profiles
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProfileListList'
+          description: ''
+  /api/profiles/{id}/:
+    get:
+      operationId: profiles_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          title: ID записи
+        description: A unique integer value identifying this Профиль.
+        required: true
+      tags:
+      - profiles
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+    put:
+      operationId: profiles_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          title: ID записи
+        description: A unique integer value identifying this Профиль.
+        required: true
+      tags:
+      - profiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProfileUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProfileUpdate'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+        '404':
+          description: No response body
+        '403':
+          description: No response body
+    patch:
+      operationId: profiles_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          title: ID записи
+        description: A unique integer value identifying this Профиль.
+        required: true
+      tags:
+      - profiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProfile'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+  /api/profiles/{id}/followed/:
+    get:
+      operationId: profiles_followed_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          title: ID записи
+        description: A unique integer value identifying this Профиль.
+        required: true
+      tags:
+      - profiles
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FollowerList'
+          description: ''
+  /api/profiles/{id}/followers/:
+    get:
+      operationId: profiles_followers_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          title: ID записи
+        description: A unique integer value identifying this Профиль.
+        required: true
+      tags:
+      - profiles
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FollowerList'
+          description: ''
+  /api/profiles/me/:
+    get:
+      operationId: profiles_me_retrieve
+      tags:
+      - profiles
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+  /api/profiles/me/delete/:
+    delete:
+      operationId: profiles_me_delete_destroy
+      tags:
+      - profiles
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    CommentCreate:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          title: ID записи
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Время создания записи
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Время изменения записи
+        content:
+          type: string
+          maxLength: 500
+        creator:
+          type: integer
+          title: ID записи
+        post:
+          type: integer
+          title: ID записи
+      required:
+      - content
+      - created_at
+      - creator
+      - id
+      - post
+      - updated_at
+    CommentUpdate:
+      type: object
+      properties:
+        content:
+          type: string
+          maxLength: 500
+      required:
+      - content
+    FollowerCreate:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          title: ID записи
+        follow_to:
+          type: integer
+          title: ID записи
+        follower:
+          type: integer
+          title: ID записи
+          readOnly: true
+      required:
+      - follow_to
+      - follower
+      - id
+    FollowerList:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          title: ID записи
+        follower:
+          type: string
+          readOnly: true
+      required:
+      - follower
+      - id
+    Nested:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          title: ID записи
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Время создания записи
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Время изменения записи
+        avatar:
+          type: string
+          format: uri
+          nullable: true
+        description:
+          type: string
+          maxLength: 1000
+        user:
+          type: integer
+          title: ID записи
+      required:
+      - created_at
+      - id
+      - updated_at
+      - user
+    PaginatedPostList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Post'
+    PaginatedProfileListList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProfileList'
+    PatchedCommentUpdate:
+      type: object
+      properties:
+        content:
+          type: string
+          maxLength: 500
+    PatchedPostUpdate:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          title: ID записи
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Время создания записи
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Время изменения записи
+        description:
+          type: string
+          maxLength: 1000
+        is_active:
+          type: boolean
+    PatchedProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          title: ID записи
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Время создания записи
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Время изменения записи
+        avatar:
+          type: string
+          format: uri
+          nullable: true
+        description:
+          type: string
+          maxLength: 1000
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          title: ID записи
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Время создания записи
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Время изменения записи
+        description:
+          type: string
+          maxLength: 1000
+        is_active:
+          type: boolean
+        creator:
+          allOf:
+          - $ref: '#/components/schemas/Nested'
+          readOnly: true
+        medias:
+          type: array
+          items:
+            $ref: '#/components/schemas/Nested'
+          readOnly: true
+      required:
+      - created_at
+      - creator
+      - description
+      - id
+      - medias
+      - updated_at
+    PostCreate:
+      type: object
+      properties:
+        description:
+          type: string
+          maxLength: 1000
+        medias:
+          type: array
+          items:
+            type: integer
+            title: ID записи
+        is_active:
+          type: boolean
+        creator:
+          type: integer
+          title: ID записи
+          readOnly: true
+      required:
+      - creator
+      - description
+      - medias
+    PostMediaCreate:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          title: ID записи
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Время создания записи
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Время изменения записи
+        file:
+          type: string
+          format: uri
+          pattern: (?:jpg|png|gif|bmp|ico|mp4|webm|avi)$
+      required:
+      - created_at
+      - file
+      - id
+      - updated_at
+    PostUpdate:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          title: ID записи
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Время создания записи
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Время изменения записи
+        description:
+          type: string
+          maxLength: 1000
+        is_active:
+          type: boolean
+      required:
+      - created_at
+      - description
+      - id
+      - updated_at
+    Profile:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          title: ID записи
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Время создания записи
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Время изменения записи
+        avatar:
+          type: string
+          format: uri
+          nullable: true
+        description:
+          type: string
+          maxLength: 1000
+      required:
+      - created_at
+      - id
+      - updated_at
+    ProfileList:
+      type: object
+      properties:
+        avatar:
+          type: string
+          format: uri
+          nullable: true
+        username:
+          type: string
+          readOnly: true
+      required:
+      - username
+    ProfileUpdate:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          title: ID записи
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Время создания записи
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Время изменения записи
+        avatar:
+          type: string
+          format: uri
+          nullable: true
+        description:
+          type: string
+          maxLength: 1000
+      required:
+      - created_at
+      - id
+      - updated_at
+    Register:
+      type: object
+      description: User register serializer class
+      properties:
+        username:
+          type: string
+          maxLength: 255
+        password:
+          type: string
+          writeOnly: true
+        password_confirm:
+          type: string
+          writeOnly: true
+        email:
+          type: string
+          format: email
+      required:
+      - email
+      - password
+      - password_confirm
+      - username
+    SignInToken:
+      type: object
+      description: Customize SignInTokenSerializer for provide custom token claim
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - password
+      - username
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+      required:
+      - access
+      - refresh
+    TokenVerify:
+      type: object
+      properties:
+        token:
+          type: string
+          writeOnly: true
+      required:
+      - token
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -3,6 +3,7 @@ from typing import TypeVar
 from rest_framework import serializers
 
 from ..models import Follower, Profile
+from ..services import get_profile
 
 ProfileSerializerType = TypeVar("ProfileSerializerType", bound="BaseProfileSerializer")
 
@@ -39,6 +40,18 @@ class FollowerListSerializer(BaseProfileSerializer):
     @staticmethod
     def get_follower(instance: Follower):
         return ProfileListSerializer(instance.follower).data
+
+
+class FollowerCreateSerializer(BaseProfileSerializer):
+    follower = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        model = Follower
+        fields = ("id", "follow_to", "follower")
+
+    def create(self, validated_data):
+        validated_data["follower"] = get_profile(user=self.context["request"].user)
+        return super().create(validated_data)
 
 
 class ProfileUpdateSerializer(BaseProfileSerializer):
