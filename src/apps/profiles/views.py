@@ -10,6 +10,7 @@ from rest_framework.response import Response
 
 from .models import Follower, Profile
 from .serializers.profiles import (
+    FollowerCreateSerializer,
     FollowerListSerializer,
     ProfileListSerializer,
     ProfileSerializer,
@@ -96,7 +97,7 @@ class ProfileViewSet(
         return super().get_object()
 
 
-class FollowerViewSet(mixins.DestroyModelMixin, viewsets.GenericViewSet):
+class FollowerViewSet(mixins.DestroyModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
     queryset = Follower.objects.all()
-    serializer_class = FollowerListSerializer
+    serializer_class = FollowerCreateSerializer
     permission_classes = [IsAuthenticated]
