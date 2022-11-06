@@ -22,6 +22,7 @@ class CommentViewSet(
 ):
     queryset = Comment.objects.all()
     serializer_class = CommentCreateSerializer
+    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         methods=["POST"], request=CommentCreateSerializer, responses={status.HTTP_201_CREATED: CommentCreateSerializer}
