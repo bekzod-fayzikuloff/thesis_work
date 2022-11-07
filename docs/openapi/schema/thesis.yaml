@@ -147,7 +147,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CommentCreate'
-          description: ''
+          description: Create a new post's comment
+        '400':
+          description: Bad request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+                  description: Unauthorized request
+          description: Unauthorized
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+              examples:
+                NotFound:
+                  value:
+                    detail: Not found.
+                  summary: Not Found
+                  description: Not Found
+          description: Not Found
+        '204':
+          description: No content
   /api/comments/{id}/:
     put:
       operationId: comments_update
@@ -182,6 +209,33 @@ paths:
               schema:
                 $ref: '#/components/schemas/CommentCreate'
           description: ''
+        '400':
+          description: Bad request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+                  description: Unauthorized request
+          description: Unauthorized
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+              examples:
+                NotFound:
+                  value:
+                    detail: Not found.
+                  summary: Not Found
+                  description: Not Found
+          description: Not Found
+        '204':
+          description: No content
     patch:
       operationId: comments_partial_update
       parameters:
@@ -214,6 +268,33 @@ paths:
               schema:
                 $ref: '#/components/schemas/CommentCreate'
           description: ''
+        '400':
+          description: Bad request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+                  description: Unauthorized request
+          description: Unauthorized
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+              examples:
+                NotFound:
+                  value:
+                    detail: Not found.
+                  summary: Not Found
+                  description: Not Found
+          description: Not Found
+        '204':
+          description: No content
     delete:
       operationId: comments_destroy
       parameters:
@@ -230,7 +311,7 @@ paths:
       - jwtAuth: []
       responses:
         '204':
-          description: No response body
+          description: No content
   /api/followers/:
     post:
       operationId: followers_create
@@ -257,6 +338,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/FollowerCreate'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+                  description: Unauthorized request
+          description: Unauthorized
   /api/followers/{id}/:
     delete:
       operationId: followers_destroy
@@ -273,8 +365,19 @@ paths:
       security:
       - jwtAuth: []
       responses:
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+                  description: Unauthorized request
+          description: Unauthorized
         '204':
-          description: No response body
+          description: No content
   /api/posts/:
     get:
       operationId: posts_list
@@ -472,6 +575,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedProfileListList'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+              examples:
+                Unauthorized:
+                  value:
+                    count: 123
+                    next: http://api.example.org/accounts/?page=4
+                    previous: http://api.example.org/accounts/?page=2
+                    results:
+                    - detail: Authentication credentials were not provided.
+                  description: Unauthorized request
+          description: Unauthorized
   /api/profiles/{id}/:
     get:
       operationId: profiles_retrieve
@@ -494,6 +612,29 @@ paths:
               schema:
                 $ref: '#/components/schemas/Profile'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+                  description: Unauthorized request
+          description: Unauthorized
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+              examples:
+                NotFound:
+                  value:
+                    detail: Not found.
+                  summary: Not Found
+                  description: Not Found
+          description: Not Found
     put:
       operationId: profiles_update
       parameters:
@@ -526,10 +667,31 @@ paths:
               schema:
                 $ref: '#/components/schemas/Profile'
           description: ''
-        '404':
-          description: No response body
         '403':
           description: No response body
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+                  description: Unauthorized request
+          description: Unauthorized
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+              examples:
+                NotFound:
+                  value:
+                    detail: Not found.
+                  summary: Not Found
+                  description: Not Found
+          description: Not Found
     patch:
       operationId: profiles_partial_update
       parameters:
@@ -584,6 +746,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/FollowerList'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+                  description: Unauthorized request
+          description: Unauthorized
   /api/profiles/{id}/followers/:
     get:
       operationId: profiles_followers_retrieve
@@ -606,6 +779,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/FollowerList'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+                  description: Unauthorized request
+          description: Unauthorized
   /api/profiles/me/:
     get:
       operationId: profiles_me_retrieve
@@ -620,6 +804,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/Profile'
           description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+                  description: Unauthorized request
+          description: Unauthorized
   /api/profiles/me/delete/:
     delete:
       operationId: profiles_me_delete_destroy
@@ -628,8 +823,19 @@ paths:
       security:
       - jwtAuth: []
       responses:
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+                  description: Unauthorized request
+          description: Unauthorized
         '204':
-          description: No response body
+          description: No content
 components:
   schemas:
     CommentCreate:
@@ -639,32 +845,21 @@ components:
           type: integer
           readOnly: true
           title: ID записи
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-          title: Время создания записи
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-          title: Время изменения записи
-        content:
-          type: string
-          maxLength: 500
         creator:
           type: integer
           title: ID записи
+          readOnly: true
         post:
           type: integer
           title: ID записи
+        content:
+          type: string
+          maxLength: 500
       required:
       - content
-      - created_at
       - creator
       - id
       - post
-      - updated_at
     CommentUpdate:
       type: object
       properties:
@@ -736,6 +931,13 @@ components:
       - id
       - updated_at
       - user
+    NotFound:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
     PaginatedPostList:
       type: object
       properties:
@@ -1060,6 +1262,13 @@ components:
           writeOnly: true
       required:
       - token
+    UnAuthorizedRequest:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
   securitySchemes:
     jwtAuth:
       type: http
