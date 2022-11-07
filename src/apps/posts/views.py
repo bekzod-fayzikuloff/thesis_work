@@ -38,7 +38,7 @@ class CommentViewSet(
         },
         # examples=[*common_responses_examples()]  # noqa: E501 Examples was defined in common_responses_schema
     )
-    def create(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs) -> Response:
         return super().create(request, *args, **kwargs)
 
     @extend_schema(
@@ -62,7 +62,7 @@ class CommentViewSet(
             **common_responses_schema(),
         },
     )
-    def partial_update(self, request, *args, **kwargs):
+    def partial_update(self, request, *args, **kwargs) -> Response:
         return super().partial_update(request, *args, **kwargs)
 
     @extend_schema(methods=["DELETE"], responses={**common_responses_schema(status_codes=[status.HTTP_204_NO_CONTENT])})
