@@ -8,6 +8,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from common.openapi import common_responses_schema
+
 from .models import Follower, Profile
 from .serializers.profiles import (
     FollowerCreateSerializer,
@@ -26,34 +28,67 @@ class ProfileViewSet(
     queryset = Profile.objects.all()
     permission_classes = [IsAuthenticated]
 
-    @extend_schema(responses={status.HTTP_200_OK: ProfileListSerializer}, methods=["GET"])
+    @extend_schema(
+        methods=["GET"],
+        responses={
+            status.HTTP_200_OK: ProfileListSerializer,
+            **common_responses_schema(status_codes=[status.HTTP_401_UNAUTHORIZED]),
+        },
+    )
     def list(self, request, *args, **kwargs) -> Response:
         return super().list(request, *args, **kwargs)
 
-    @extend_schema(methods=["GET"])
+    @extend_schema(
+        methods=["GET"],
+        responses={
+            status.HTTP_200_OK: ProfileSerializer,
+            **common_responses_schema(status_codes=[status.HTTP_401_UNAUTHORIZED, status.HTTP_404_NOT_FOUND]),
+        },
+    )
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
-    @extend_schema(methods=["GET"])
+    @extend_schema(
+        methods=["GET"],
+        responses={
+            status.HTTP_200_OK: FollowerListSerializer,
+            **common_responses_schema(status_codes=[status.HTTP_401_UNAUTHORIZED]),
+        },
+    )
     @action(methods=["GET"], detail=True)
     def followers(self, request: Request, *args, **kwargs) -> Response:
         followers_qs = Follower.objects.filter(follow_to=self.get_object())
         return Response(data=self.get_serializer(followers_qs, many=True).data)
 
-    @extend_schema(methods=["GET"])
+    @extend_schema(
+        methods=["GET"],
+        responses={
+            status.HTTP_200_OK: FollowerListSerializer,
+            **common_responses_schema(status_codes=[status.HTTP_401_UNAUTHORIZED]),
+        },
+    )
     @action(methods=["GET"], detail=True)
     def followed(self, request: Request, *args, **kwargs) -> Response:
         followed_qs = Follower.objects.filter(follower=self.get_object())
         return Response(data=self.get_serializer(followed_qs, many=True).data)
 
-    @extend_schema(methods=["GET"])
+    @extend_schema(
+        methods=["GET"],
+        responses={
+            status.HTTP_200_OK: ProfileSerializer,
+            **common_responses_schema(status_codes=[status.HTTP_401_UNAUTHORIZED]),
+        },
+    )
     @action(methods=["GET"], detail=False, url_path=r"me")
     def profile_detail(self, request: Request) -> Response:
         instance = Profile.objects.get(user=self.request.user)
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
-    @extend_schema(responses={status.HTTP_204_NO_CONTENT: None}, methods=["DELETE"])
+    @extend_schema(
+        methods=["DELETE"],
+        responses={**common_responses_schema(status_codes=[status.HTTP_204_NO_CONTENT, status.HTTP_401_UNAUTHORIZED])},
+    )
     @action(methods=["DELETE"], detail=False, url_path=r"me/delete")
     def delete_profile(self, request: Request, *args, **kwargs) -> Response:
         instance = Profile.objects.get(user=self.request.user)
@@ -61,13 +96,13 @@ class ProfileViewSet(
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @extend_schema(
+        methods=["PUT", "PATCH"],
         request=ProfileUpdateSerializer,
         responses={
             status.HTTP_200_OK: ProfileSerializer,
-            status.HTTP_404_NOT_FOUND: None,
             status.HTTP_403_FORBIDDEN: None,
+            **common_responses_schema(status_codes=[status.HTTP_401_UNAUTHORIZED, status.HTTP_404_NOT_FOUND]),
         },
-        methods=["PUT", "PATCH"],
     )
     def update(self, request: Request, *args, **kwargs) -> Response:
         profile = get_object_or_404(Profile, user__id=kwargs.get("pk"))
@@ -101,3 +136,21 @@ class FollowerViewSet(mixins.DestroyModelMixin, mixins.CreateModelMixin, viewset
     queryset = Follower.objects.all()
     serializer_class = FollowerCreateSerializer
     permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        methods=["POST"],
+        request=FollowerCreateSerializer,
+        responses={
+            status.HTTP_201_CREATED: FollowerCreateSerializer,
+            **common_responses_schema(status_codes=[status.HTTP_401_UNAUTHORIZED, status.HTTP_400_BAD_REQUEST]),
+        },
+    )
+    def create(self, request, *args, **kwargs) -> Response:
+        return super().create(request, *args, **kwargs)
+
+    @extend_schema(
+        methods=["DELETE"],
+        responses={**common_responses_schema(status_codes=[status.HTTP_401_UNAUTHORIZED, status.HTTP_204_NO_CONTENT])},
+    )
+    def destroy(self, request, *args, **kwargs) -> Response:
+        return super().destroy(request, *args, **kwargs)

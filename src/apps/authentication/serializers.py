@@ -24,13 +24,36 @@ class RegisterSerializer(serializers.ModelSerializer):
         fields = ("username", "password", "password_confirm", "email")
 
     def validate(self, attrs: OrderedDict) -> Optional[OrderedDict]:
-        """Validate serializer getting parameters"""
+        """Validate serializer getting parameters.
+
+        Parameters
+        ----------
+        attrs : OrderedDict
+            RegisterSerializer register create data fields and values
+
+        Returns
+        -------
+        _ : OrderedDict, optional
+            After validation return taking serializer atts
+        """
+
         if attrs["password"] != attrs["password_confirm"]:
             raise serializers.ValidationError({"password": "Password fields didn't match."})
         return attrs
 
     def create(self, validated_data: dict) -> User:
-        """Creating a new user instance"""
+        """Creating a new user instance.
+
+        Parameters
+        ----------
+        validated_data : dict
+            Serializer validated data for creating new user instance
+
+        Returns
+        -------
+        _: User
+            User model instance
+        """
         user = User.objects.create_user(username=validated_data["username"], email=validated_data["email"])
 
         user.set_password(validated_data["password"])
@@ -44,6 +67,18 @@ class SignInTokenSerializer(TokenObtainPairSerializer):
 
     @classmethod
     def get_token(cls, user: User) -> RefreshToken:
+        """Add custom token payload
+
+        Parameters
+        ----------
+        user : User
+            User model instance
+
+        Returns
+        -------
+        _ : RefreshToken
+            RefreshToken instance return
+        """
         token = super().get_token(user)
         token["username"] = user.username
 

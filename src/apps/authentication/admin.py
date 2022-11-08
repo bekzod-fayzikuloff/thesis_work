@@ -20,6 +20,21 @@ class UserAdmin(admin.ModelAdmin):
     search_fields = ("username", "email")
 
     def get_fieldsets(self, request, obj=None) -> list[tuple[None, dict[str, list]]]:
+        """
+        UserAdmin panel get_fieldsets method
+
+        Parameters
+        ----------
+        request : Request
+            Request object
+        obj : str
+            Instance of User model (by default is None -> not created)
+
+        Returns
+        -------
+        _ : list[tuple[None, dict[str, list]]]
+            List of fieldsets
+        """
         if not obj:
             self.fieldsets = (
                 (None, {"classes": ("wide",), "fields": ("email", "username", "password", "is_staff", "is_active")}),
@@ -32,6 +47,23 @@ class UserAdmin(admin.ModelAdmin):
         return super().get_fieldsets(request, obj)
 
     def get_form(self, request, obj=None, change=False, **kwargs) -> Type[BaseModelForm]:
+        """
+        UserAdmin get form method
+
+        Parameters
+        ----------
+        request : Request
+            Request object
+        obj : str
+            Instance of User model (by default is None -> not created)
+        change: bool
+            Change state status marker
+
+        Returns
+        -------
+        _ : Type[BaseModelForm]
+            Form instance for rendering
+        """
         if not obj:
             self.form = self.add_form
         else:

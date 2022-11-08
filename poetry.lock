@@ -405,6 +405,14 @@ django = ">=2.2"
 pytz = "*"
 
 [[package]]
+name = "djangorestframework-camel-case"
+version = "1.3.0"
+description = "Camel case JSON support for Django REST framework."
+category = "main"
+optional = false
+python-versions = ">=3.5"
+
+[[package]]
 name = "djangorestframework-simplejwt"
 version = "5.2.2"
 description = "A minimal JSON Web Token authentication plugin for Django REST Framework"
@@ -1117,7 +1125,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "3538cbbea014d38ec41243b9d71c1609339c6c13aaed7f6c165258565dc6404a"
+content-hash = "2696cb5cabc03d6fa3ac89141efb6044bb436d7d3415ba9a9614db966f5b10a8"
 
 [metadata.files]
 amqp = [
@@ -1191,6 +1199,7 @@ djangorestframework = [
     {file = "djangorestframework-3.13.1-py3-none-any.whl", hash = "sha256:24c4bf58ed7e85d1fe4ba250ab2da926d263cd57d64b03e8dcef0ac683f8b1aa"},
     {file = "djangorestframework-3.13.1.tar.gz", hash = "sha256:0c33407ce23acc68eca2a6e46424b008c9c02eceb8cf18581921d0092bc1f2ee"},
 ]
+djangorestframework-camel-case = []
 djangorestframework-simplejwt = []
 drf-spectacular = []
 drf-spectacular-sidecar = []

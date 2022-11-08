@@ -9,6 +9,8 @@ from common.validators import validate_file_size
 
 
 class PostMedia(BaseModel):
+    """PostMedia model definition."""
+
     file = models.FileField(
         upload_to="posts/media/%Y/%m/%d/",
         validators=[
@@ -21,12 +23,12 @@ class PostMedia(BaseModel):
         return f"Posts {self.id} media"
 
     class Meta:
-        verbose_name = "Медия поста"
-        verbose_name_plural = "Медия постов"
+        verbose_name = "Post media"
+        verbose_name_plural = "Posts medias"
 
 
 class PostsGroup(models.Model):
-    """Описание таблицы группы постов"""
+    """PostsGroup model definition"""
 
     title = models.CharField(max_length=255)
     creator = models.ForeignKey(
@@ -38,12 +40,12 @@ class PostsGroup(models.Model):
         return f"{self.__class__.__name__}({self.title})"
 
     class Meta:
-        verbose_name = "Коллекция постов"
-        verbose_name_plural = "Коллекции постов"
+        verbose_name = "Posts group"
+        verbose_name_plural = "Posts groups"
 
 
 class Post(BaseModel):
-    """Описание таблицы постов"""
+    """Post model definition."""
 
     description = models.TextField(max_length=1000)
     creator = models.ForeignKey(to=Profile, on_delete=models.CASCADE, related_name="posts", related_query_name="posts")
@@ -54,12 +56,12 @@ class Post(BaseModel):
         return f"User {self.creator.user.username} post {self.description[:10]}..."
 
     class Meta:
-        verbose_name = "Пост"
-        verbose_name_plural = "Посты"
+        verbose_name = "Post"
+        verbose_name_plural = "Posts"
 
 
 class Comment(BaseModel):
-    """Описание таблицы комментариев"""
+    """Comment model definition."""
 
     content = models.TextField(max_length=500, db_index=True)
     creator = models.ForeignKey(to=Profile, on_delete=models.CASCADE)
@@ -69,12 +71,12 @@ class Comment(BaseModel):
         return f"Comment by {self.creator.user.username} to {self.post}"
 
     class Meta:
-        verbose_name = "Комментарий"
-        verbose_name_plural = "Комментарии"
+        verbose_name = "Comment"
+        verbose_name_plural = "Comments"
 
 
 class Reaction(BaseModel):
-    """Описание таблицы реакции"""
+    """Reaction model definition."""
 
     creator = models.ForeignKey(to=Profile, on_delete=models.CASCADE)
     post = models.ForeignKey(to=Post, on_delete=models.CASCADE)
@@ -86,5 +88,5 @@ class Reaction(BaseModel):
         return f"Reaction by {self.creator.user.username} to {self.post}"
 
     class Meta:
-        verbose_name = "Реакция"
-        verbose_name_plural = "Реакции"
+        verbose_name = "Reaction"
+        verbose_name_plural = "Reactions"
