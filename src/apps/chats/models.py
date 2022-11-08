@@ -12,36 +12,37 @@ from common.validators import validate_file_size
 
 
 class Chat(BaseModel):
-    """Описание таблицы Чатов"""
+    """Chats model definition."""
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    title = models.CharField("Название", max_length=255, db_index=True)
-    description = models.TextField("Описание", max_length=500, blank=True)
-    members = models.ManyToManyField(to=Profile, blank=True, related_name="chats", verbose_name="Участники")
+    title = models.CharField("Title", max_length=255, db_index=True)
+    description = models.TextField("Description", max_length=500, blank=True)
+    members = models.ManyToManyField(to=Profile, blank=True, related_name="chats", verbose_name="Members")
 
     @property
     def flatten_members(self):
         return ", ".join(member.user.username for member in self.members.filter()[:10])
 
     class Meta:
-        verbose_name = "Чат"
-        verbose_name_plural = "Чаты"
+        verbose_name = "Chat"
+        verbose_name_plural = "Chats"
 
     def __str__(self) -> str:
         return f"Chat ({self.title})"
 
 
 class PrivateChat(BaseModel):
+    """PrivateChat model definition."""
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     first_member = models.ForeignKey(
-        Profile, on_delete=models.SET_NULL, null=True, verbose_name="Первый участник", related_name="+"
+        Profile, on_delete=models.SET_NULL, null=True, verbose_name="First member", related_name="+"
     )
     second_member = models.ForeignKey(
-        Profile, on_delete=models.SET_NULL, null=True, verbose_name="Второй участник", related_name="+"
+        Profile, on_delete=models.SET_NULL, null=True, verbose_name="Second member", related_name="+"
     )
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        """Описание логики сохранения чата с личной группой в которой происходит проверка на уникальность группы"""
         qs = PrivateChat.objects.filter(first_member=self.second_member, second_member=self.first_member)
         for privatechat in qs:
             if privatechat.id != self.id:
@@ -52,8 +53,8 @@ class PrivateChat(BaseModel):
         return f"Private chat with [{self.first_member}, {self.second_member}]"
 
     class Meta:
-        verbose_name = "Личное"
-        verbose_name_plural = "Личные"
+        verbose_name = "Private chat"
+        verbose_name_plural = "Private chats"
         unique_together = (("first_member", "second_member"),)
         constraints = [
             models.CheckConstraint(
@@ -71,21 +72,22 @@ class Media(BaseModel):
             functools.partial(validate_file_size, max_size=10485760 * 100),
         ],
     )
+    """Media model definition."""
 
     def __str__(self) -> str:
         return f"Message({self.id}) media"
 
     class Meta:
-        verbose_name = "Meдия сообщения"
-        verbose_name_plural = "Медия сообщений"
+        verbose_name = "Message media"
+        verbose_name_plural = "Messages medias"
 
 
 class Message(BaseModel):
-    """Описание таблицы сообщение"""
+    """Message model definition."""
 
     limit = models.Q(app_label="chats", model="chat") | models.Q(app_label="chats", model="privatechat")
 
-    content = models.TextField("Содержимое", max_length=1000, blank=True)
+    content = models.TextField("Content", max_length=1000, blank=True)
     maker = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="messages", related_query_name="message")
     chat_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, limit_choices_to=limit)
     chat_id = models.UUIDField()
@@ -100,12 +102,12 @@ class Message(BaseModel):
         return f"Message({self.id}) to chat({self.chat_type.get_object_for_this_type(id=self.chat_id)})"
 
     class Meta:
-        verbose_name = "Сообщение"
-        verbose_name_plural = "Сообщения"
+        verbose_name = "Message"
+        verbose_name_plural = "Messages"
 
 
 class Elected(BaseModel):
-    """Описание таблицы сообщение `Избранное`"""
+    """Elected model definition."""
 
     creator = models.OneToOneField(to=Profile, on_delete=models.CASCADE, related_name="elected_messages")
     messages = models.ManyToManyField(to=Message, blank=True)
@@ -114,5 +116,5 @@ class Elected(BaseModel):
         return f"{self.__class__.__name__}({self.creator.user.username})"
 
     class Meta:
-        verbose_name = "Избранное"
-        verbose_name_plural = "Избранные"
+        verbose_name = "Elected"
+        verbose_name_plural = "Electeds"

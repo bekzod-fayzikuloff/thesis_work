@@ -7,7 +7,7 @@ from common.models import BaseModel
 
 
 class Profile(BaseModel):
-    """Описание таблицы профиля"""
+    """Profile model definition"""
 
     avatar = models.ImageField(upload_to="profiles/media/%Y/%m/%d/", blank=True, null=True)
     user = models.OneToOneField(to=User, on_delete=models.CASCADE)
@@ -20,12 +20,12 @@ class Profile(BaseModel):
         """Metaclass with table representation info."""
 
         ordering = ("-id",)
-        verbose_name = "Профиль"
-        verbose_name_plural = "Профили"
+        verbose_name = "Profile"
+        verbose_name_plural = "Profiles"
 
 
 class Follower(BaseModel):
-    """Описание таблицы `фолловеров`"""
+    """Follower model definition"""
 
     follower = models.ForeignKey(to=Profile, on_delete=models.CASCADE, related_name="followers")
     follow_to = models.ForeignKey(to=Profile, on_delete=models.CASCADE, related_name="followed")
@@ -34,8 +34,8 @@ class Follower(BaseModel):
         return f"{self.follower} follow to {self.follow_to}"
 
     class Meta:
-        verbose_name = "Подписчик"
-        verbose_name_plural = "Подписчики"
+        verbose_name = "Follower"
+        verbose_name_plural = "Followers"
         unique_together = (("follower", "follow_to"),)
         constraints = [
             models.CheckConstraint(
