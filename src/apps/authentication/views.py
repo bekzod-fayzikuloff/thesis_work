@@ -16,7 +16,13 @@ class SignInView(TokenObtainPairView):
 @extend_schema(request=RegisterSerializer, responses=RegisterSerializer)
 @api_view(http_method_names=["POST"])
 def register_view(request: Request) -> Response:
-    """Register view"""
+    """Register view.
+
+    :argument
+        request(Request): drf request.Request - `django.http.request.HttpRequest`'s subclass - object
+    :return
+        Register endpoint response
+    """
     serializer = RegisterSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     serializer.save()
