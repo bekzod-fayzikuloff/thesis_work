@@ -13,7 +13,7 @@ class CommentCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ("id", "creator", "post", "content")
+        fields = ("id", "creator", "post", "content", "answer")
 
     def create(self, validated_data):
         validated_data["creator"] = get_profile(user=self.context.get("request").user)
