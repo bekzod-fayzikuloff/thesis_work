@@ -6,4 +6,4 @@ from rest_framework.response import Response
 @api_view(http_method_names=["GET"])
 @permission_classes([AllowAny])
 def index(request):
-    return Response("Its response")
+    return Response({"key": "Its response"})

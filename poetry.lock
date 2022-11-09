@@ -337,6 +337,14 @@ twisted = {version = ">=22.4", extras = ["tls"]}
 tests = ["hypothesis", "pytest", "pytest-asyncio", "django"]
 
 [[package]]
+name = "defusedxml"
+version = "0.7.1"
+description = "XML bomb protection for Python stdlib modules"
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+
+[[package]]
 name = "deprecated"
 version = "1.2.13"
 description = "Python @deprecated decorator to deprecate old python classes, functions or methods."
@@ -471,6 +479,22 @@ doc = ["Sphinx (>=1.6.5,<2)", "sphinx-rtd-theme (>=0.1.9)"]
 lint = ["flake8", "pep8", "isort"]
 python-jose = ["python-jose (==3.3.0)"]
 test = ["cryptography", "pytest-cov", "pytest-django", "pytest-xdist", "pytest", "tox"]
+
+[[package]]
+name = "djangorestframework-xml"
+version = "2.0.0"
+description = "XML support for Django REST Framework"
+category = "main"
+optional = false
+python-versions = ">=3.5"
+
+[package.dependencies]
+defusedxml = ">=0.6.0"
+
+[package.extras]
+dev = ["mkdocs (>=0.11.1)", "Django (>=1.6)", "djangorestframework (>=2.4.3)", "pytest-django", "pytest", "flake8", "tox", "pre-commit"]
+docs = ["mkdocs (>=0.11.1)"]
+tests = ["Django (>=1.6)", "djangorestframework (>=2.4.3)", "pytest-django", "pytest", "flake8"]
 
 [[package]]
 name = "docutils"
@@ -1368,7 +1392,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "d325d02fd2936727a0183feb8189349e08e8e4d0386b09b3a893b3e1540d9c93"
+content-hash = "70ff71ec748814e5890d91f6f07257aa1ffb2ae27f951beac34d6b9871c76613"
 
 [metadata.files]
 alabaster = []
@@ -1428,6 +1452,7 @@ constantly = [
 ]
 cryptography = []
 daphne = []
+defusedxml = []
 deprecated = [
     {file = "Deprecated-1.2.13-py2.py3-none-any.whl", hash = "sha256:64756e3e14c8c5eea9795d93c524551432a0be75629f8f29e67ab8caf076c76d"},
     {file = "Deprecated-1.2.13.tar.gz", hash = "sha256:43ac5335da90c31c24ba028af536a91d41d53f9e6901ddb021bcc572ce44e38d"},
@@ -1448,6 +1473,7 @@ djangorestframework = [
 ]
 djangorestframework-camel-case = []
 djangorestframework-simplejwt = []
+djangorestframework-xml = []
 docutils = []
 drf-spectacular = []
 drf-spectacular-sidecar = []
