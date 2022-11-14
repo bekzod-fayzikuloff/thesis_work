@@ -12,7 +12,8 @@ docs_urlpatterns = [
 
 urlpatterns = [
     path("auth/", include("apps.authentication.urls")),
-    path("chats/", include("apps.chats.urls")),
+    path("chats/", include(include_object("apps.chats.urls:chats_urlpatterns"))),
+    path("messages/", include(include_object("apps.chats.urls:messages_urlpatterns"))),
     path("followers/", include(include_object("apps.profiles.urls:followers_urlpatterns"))),
     path("profiles/", include("apps.profiles.urls")),
     path("posts/", include(include_object("apps.posts.urls:posts_urlpatterns"))),
