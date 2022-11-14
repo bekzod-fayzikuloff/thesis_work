@@ -1,9 +1,10 @@
 from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
+from rest_framework.generics import get_object_or_404
 
 from ...profiles.serializers.profiles import ProfileListSerializer
 from ...profiles.services import get_profile
-from ..models import Chat, Message
+from ..models import Chat, Elected, ElectedMessage, Message
 
 
 class ChatMessageSerializer(serializers.ModelSerializer):
@@ -50,3 +51,16 @@ class ChatMessageListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chat
         fields = ("messages",)
+
+
+class ForwardElectedMessageSerializer(serializers.Serializer):
+    message_id = serializers.IntegerField()
+
+    def create(self, validated_data):
+        message = get_object_or_404(Message, pk=validated_data["message_id"])
+        elected = get_object_or_404(Elected, creator=get_profile(user=self.context.get("request").user))
+        elected.electedmessage_set.add(ElectedMessage.objects.create(message=message, elected=elected))
+        return message
+
+    def update(self, instance, validated_data):
+        super().update(instance, validated_data)

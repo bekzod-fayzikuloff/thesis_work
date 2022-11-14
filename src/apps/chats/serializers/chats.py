@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from ...profiles.serializers.profiles import ProfileListSerializer
-from ..models import Chat
+from ..models import Chat, Media
 
 
 class ChatListSerializer(serializers.ModelSerializer):
@@ -38,3 +38,9 @@ class ChatMemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chat
         fields = ("members",)
+
+
+class ChatMediaCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Media
+        fields = "__all__"

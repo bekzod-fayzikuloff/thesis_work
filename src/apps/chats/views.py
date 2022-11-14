@@ -1,14 +1,22 @@
-from rest_framework import mixins, viewsets
+from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
+from rest_framework.request import Request
 from rest_framework.response import Response
 
-from .models import Chat, Message
-from .serializers.chats import ChatCreateSerializer, ChatListSerializer, ChatMemberSerializer, ChatRetrieveSerializer
+from .models import Chat, Elected, Message
+from .serializers.chats import (
+    ChatCreateSerializer,
+    ChatListSerializer,
+    ChatMediaCreateSerializer,
+    ChatMemberSerializer,
+    ChatRetrieveSerializer,
+)
 from .serializers.messages import (
     ChatMessageCreateSerializer,
     ChatMessageListSerializer,
     ChatMessageSerializer,
     ChatMessageUpdateSerializer,
+    ForwardElectedMessageSerializer,
 )
 
 
@@ -23,6 +31,17 @@ class ChatViewSet(
     serializer_class = ChatListSerializer
     queryset = Chat.objects.all()
 
+    @action(methods=["GET"], detail=False)
+    def elected(self, request: Request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @action(methods=["POST"], detail=False, url_path="elected/messages")
+    def add_elected_message(self, request: Request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_201_CREATED)
+
     @action(methods=["GET"], detail=True)
     def members(self, request, pk, *args, **kwargs):
         return Response(self.get_serializer(self.get_object()).data)
@@ -30,6 +49,10 @@ class ChatViewSet(
     @action(methods=["GET"], detail=True)
     def messages(self, request, pk, *args, **kwargs):
         return Response(self.get_serializer(self.get_object()).data)
+
+    @action(methods=["POST"], detail=True)
+    def medias(self, request, pk, *args, **kwargs):
+        return super().create(request)
 
     def get_serializer_class(self):
         match self.action:
@@ -43,6 +66,12 @@ class ChatViewSet(
                 return ChatMemberSerializer
             case "messages":
                 return ChatMessageListSerializer
+            case "medias":
+                return ChatMediaCreateSerializer
+            case "elected":
+                return ChatMessageSerializer
+            case "add_elected_message":
+                return ForwardElectedMessageSerializer
             case _:
                 return self.serializer_class
 
@@ -50,6 +79,8 @@ class ChatViewSet(
         match self.action:
             case "list":
                 return Chat.objects.filter(members__user=self.request.user)
+            case "elected":
+                return Elected.objects.get(creator__user=self.request.user).messages.all()
             case _:
                 return super().get_queryset()
 
