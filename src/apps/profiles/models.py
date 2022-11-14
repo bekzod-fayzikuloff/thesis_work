@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, transaction
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -49,4 +49,7 @@ class Follower(BaseModel):
 @receiver(post_save, sender=User)
 def create_profile(sender, **kwargs) -> None:  # noqa
     if kwargs.get("created"):
-        Profile.objects.create(user=kwargs.get("instance"))
+        from ..chats.models import Elected
+
+        with transaction.atomic():
+            Elected.objects.create(creator=Profile.objects.create(user=kwargs.get("instance")))
