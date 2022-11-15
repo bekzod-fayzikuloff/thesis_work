@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
 from ...profiles.serializers.profiles import ProfileListSerializer
-from ..models import Chat, Media
+from ...profiles.services import get_profile
+from ..models import Chat, Media, PrivateChat
 
 
 class ChatListSerializer(serializers.ModelSerializer):
@@ -44,3 +45,29 @@ class ChatMediaCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Media
         fields = "__all__"
+
+
+class PrivateChatCreateSerializer(serializers.ModelSerializer):
+    first_member = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        model = PrivateChat
+        fields = ("first_member", "second_member")
+
+    def create(self, validated_data):
+        validated_data["first_member"] = get_profile(user=self.context.get("request").user)
+        result = super().create(validated_data)
+        return result
+
+
+class PrivateChatSerializer(serializers.ModelSerializer):
+    member = serializers.SerializerMethodField()
+
+    def get_member(self, instance: PrivateChat):
+        if instance.first_member == get_profile(user=self.context.get("request").user):
+            return ProfileListSerializer(instance.second_member).data
+        return ProfileListSerializer(instance.first_member).data
+
+    class Meta:
+        model = PrivateChat
+        exclude = ("first_member", "second_member")

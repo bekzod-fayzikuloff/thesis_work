@@ -1,15 +1,19 @@
+from django.db.models import Q
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from .models import Chat, Elected, Message
+from .models import Chat, Elected, Message, PrivateChat
 from .serializers.chats import (
     ChatCreateSerializer,
     ChatListSerializer,
     ChatMediaCreateSerializer,
     ChatMemberSerializer,
     ChatRetrieveSerializer,
+    PrivateChatCreateSerializer,
+    PrivateChatSerializer,
 )
 from .serializers.messages import (
     ChatMessageCreateSerializer,
@@ -101,3 +105,34 @@ class MessageViewSet(
                 return ChatMessageUpdateSerializer
             case _:
                 return self.serializer_class
+
+
+class PrivateChatViewSet(
+    mixins.ListModelMixin, mixins.CreateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet
+):
+    serializer_class = PrivateChatSerializer
+    queryset = PrivateChat.objects.all()
+
+    @action(methods=["GET"], detail=True)
+    def messages(self, request, pk, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    def get_serializer_class(self):
+        match self.action:
+            case "create":
+                return PrivateChatCreateSerializer
+            case "messages":
+                return ChatMessageListSerializer
+            case _:
+                return self.serializer_class
+
+    def get_queryset(self):
+        match self.action:
+            case "messages":
+                pk = self.kwargs.get("pk")
+                private_chat = get_object_or_404(self.queryset, pk=pk)
+                return [private_chat]
+            case _:
+                return PrivateChat.objects.filter(
+                    Q(first_member__user=self.request.user) | Q(second_member__user=self.request.user)
+                )

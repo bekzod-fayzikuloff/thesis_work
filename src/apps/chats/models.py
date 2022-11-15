@@ -123,3 +123,7 @@ class Elected(BaseModel):
 class ElectedMessage(BaseModel):
     elected = models.ForeignKey(Elected, on_delete=models.CASCADE)
     message = models.ForeignKey(Message, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "ElectedMessage"
+        verbose_name_plural = "ElectedMessages"
