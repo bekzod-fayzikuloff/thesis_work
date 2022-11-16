@@ -1,5 +1,7 @@
 from typing import TypeVar
 
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 from ..models import Follower, Profile
@@ -22,6 +24,7 @@ class ProfileListSerializer(BaseProfileSerializer):
     username = serializers.SerializerMethodField()
 
     @staticmethod
+    @extend_schema_field(OpenApiTypes.STR)
     def get_username(instance: Profile):
         return instance.user.username
 
@@ -38,6 +41,7 @@ class FollowerListSerializer(BaseProfileSerializer):
         fields = ("id", "follower")
 
     @staticmethod
+    @extend_schema_field(ProfileListSerializer)
     def get_follower(instance: Follower):
         return ProfileListSerializer(instance.follower).data
 

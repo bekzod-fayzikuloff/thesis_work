@@ -1,3 +1,5 @@
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 from ...profiles.serializers.profiles import ProfileListSerializer
@@ -21,6 +23,7 @@ class ChatRetrieveSerializer(serializers.ModelSerializer):
     members_quantity = serializers.SerializerMethodField()
 
     @staticmethod
+    @extend_schema_field(OpenApiTypes.INT)
     def get_members_quantity(instance: Chat):
         return instance.members.count()
 
@@ -33,6 +36,7 @@ class ChatMemberSerializer(serializers.ModelSerializer):
     members = serializers.SerializerMethodField()
 
     @staticmethod
+    @extend_schema_field(ProfileListSerializer(allow_null=True, many=True))
     def get_members(instance: Chat):
         return ProfileListSerializer(instance.members, many=True).data
 
@@ -63,6 +67,7 @@ class PrivateChatCreateSerializer(serializers.ModelSerializer):
 class PrivateChatSerializer(serializers.ModelSerializer):
     member = serializers.SerializerMethodField()
 
+    @extend_schema_field(ProfileListSerializer(allow_null=True, many=True))
     def get_member(self, instance: PrivateChat):
         if instance.first_member == get_profile(user=self.context.get("request").user):
             return ProfileListSerializer(instance.second_member).data

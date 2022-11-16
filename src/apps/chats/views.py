@@ -9,6 +9,7 @@ from rest_framework.response import Response
 
 from common.openapi import common_responses_schema
 
+from .filters import ChatFilter, MessageFilter, PrivateChatFilter
 from .models import Chat, Elected, Message, PrivateChat
 from .serializers.chats import (
     ChatCreateSerializer,
@@ -38,6 +39,7 @@ class ChatViewSet(
     serializer_class = ChatListSerializer
     queryset = Chat.objects.all()
     permission_classes = [IsAuthenticated]
+    filterset_class = ChatFilter
 
     @extend_schema(
         methods=["GET"],
@@ -181,6 +183,7 @@ class MessageViewSet(
     serializer_class = ChatMessageSerializer
     queryset = Message.objects.all()
     permission_classes = [IsAuthenticated]
+    filterset_class = MessageFilter
 
     def get_serializer_class(self):
         match self.action:
@@ -200,6 +203,7 @@ class PrivateChatViewSet(
     serializer_class = PrivateChatSerializer
     queryset = PrivateChat.objects.all()
     permission_classes = [IsAuthenticated]
+    filterset_class = PrivateChatFilter
 
     @action(methods=["GET"], detail=True)
     def messages(self, request, *args, **kwargs) -> Response:

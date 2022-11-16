@@ -8,6 +8,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from common.openapi import common_responses_schema
 
+from .filters import CommentFilter, PostFilter
 from .models import Comment, Post
 from .serializers.comments import CommentCreateSerializer, CommentSerializerT, CommentUpdateSerializer
 from .serializers.posts import (
@@ -25,6 +26,7 @@ class CommentViewSet(
     queryset = Comment.objects.all()
     serializer_class = CommentCreateSerializer
     permission_classes = [IsAuthenticated]
+    filterset_class = CommentFilter
 
     @extend_schema(
         methods=["POST"],
@@ -85,6 +87,7 @@ class PostViewSet(ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated]
+    filterset_class = PostFilter
 
     @action(methods=["POST"], detail=False, url_path=r"medias")
     def create_post_media(self, request: Request) -> Response:

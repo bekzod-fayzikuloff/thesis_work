@@ -37,6 +37,7 @@ THIRD_PARTY_PACKAGES: PackagesListType = [
     "drf_spectacular_sidecar",
     "rest_framework_simplejwt",
     "channels",
+    "django_filters",
 ]
 
 PROJECT_APPS: PackagesListType = [
@@ -113,6 +114,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
     "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_simplejwt.authentication.JWTAuthentication",),
+    "DEFAULT_FILTER_BACKENDS": ['django_filters.rest_framework.DjangoFilterBackend'],
 
     'DEFAULT_RENDERER_CLASSES': (
         'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
