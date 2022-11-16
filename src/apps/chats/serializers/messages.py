@@ -1,4 +1,5 @@
 from django.contrib.contenttypes.models import ContentType
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 
@@ -11,6 +12,7 @@ class ChatMessageSerializer(serializers.ModelSerializer):
     maker = serializers.SerializerMethodField()
 
     @staticmethod
+    @extend_schema_field(ProfileListSerializer)
     def get_maker(instance: Message):
         return ProfileListSerializer(instance.maker).data
 
@@ -45,6 +47,7 @@ class ChatMessageListSerializer(serializers.ModelSerializer):
     messages = serializers.SerializerMethodField()
 
     @staticmethod
+    @extend_schema_field(ChatMessageSerializer(allow_null=True, many=True))
     def get_messages(instance: Chat):
         return ChatMessageSerializer(Message.objects.filter(chat_id=instance.pk), many=True).data
 
