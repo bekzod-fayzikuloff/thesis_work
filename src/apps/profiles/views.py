@@ -10,6 +10,7 @@ from rest_framework.response import Response
 
 from common.openapi import common_responses_schema
 
+from .filters import FollowerFilter, ProfileFilter
 from .models import Follower, Profile
 from .serializers.profiles import (
     FollowerCreateSerializer,
@@ -27,6 +28,7 @@ class ProfileViewSet(
     serializer_class = ProfileSerializer
     queryset = Profile.objects.all()
     permission_classes = [IsAuthenticated]
+    filterset_class = ProfileFilter
 
     @extend_schema(
         methods=["GET"],
@@ -136,6 +138,7 @@ class FollowerViewSet(mixins.DestroyModelMixin, mixins.CreateModelMixin, viewset
     queryset = Follower.objects.all()
     serializer_class = FollowerCreateSerializer
     permission_classes = [IsAuthenticated]
+    filterset_class = FollowerFilter
 
     @extend_schema(
         methods=["POST"],
