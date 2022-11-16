@@ -27,7 +27,7 @@ class ProfileListSerializer(BaseProfileSerializer):
 
     class Meta:
         model = Profile
-        fields = ("avatar", "username")
+        fields = ("id", "avatar", "username")
 
 
 class FollowerListSerializer(BaseProfileSerializer):

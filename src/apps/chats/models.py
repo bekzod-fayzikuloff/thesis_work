@@ -110,7 +110,7 @@ class Elected(BaseModel):
     """Elected model definition."""
 
     creator = models.OneToOneField(to=Profile, on_delete=models.CASCADE, related_name="elected_messages")
-    messages = models.ManyToManyField(to=Message, blank=True)
+    messages = models.ManyToManyField(to=Message, blank=True, through="ElectedMessage")
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__}({self.creator.user.username})"
@@ -118,3 +118,12 @@ class Elected(BaseModel):
     class Meta:
         verbose_name = "Elected"
         verbose_name_plural = "Electeds"
+
+
+class ElectedMessage(BaseModel):
+    elected = models.ForeignKey(Elected, on_delete=models.CASCADE)
+    message = models.ForeignKey(Message, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "ElectedMessage"
+        verbose_name_plural = "ElectedMessages"

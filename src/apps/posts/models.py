@@ -65,6 +65,9 @@ class Comment(BaseModel):
 
     content = models.TextField(max_length=500, db_index=True)
     creator = models.ForeignKey(to=Profile, on_delete=models.CASCADE)
+    answer = models.ForeignKey(
+        "self", on_delete=models.SET_NULL, null=True, blank=True, related_name="replies", related_query_name="reply"
+    )
     post = models.ForeignKey(to=Post, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
