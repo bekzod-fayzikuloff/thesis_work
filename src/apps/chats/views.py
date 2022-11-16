@@ -1,9 +1,13 @@
 from django.db.models import Q
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
+
+from common.openapi import common_responses_schema
 
 from .models import Chat, Elected, Message, PrivateChat
 from .serializers.chats import (
@@ -31,31 +35,113 @@ class ChatViewSet(
     mixins.UpdateModelMixin,
     viewsets.GenericViewSet,
 ):
-
     serializer_class = ChatListSerializer
     queryset = Chat.objects.all()
+    permission_classes = [IsAuthenticated]
 
-    @action(methods=["GET"], detail=False)
-    def elected(self, request: Request, *args, **kwargs):
+    @extend_schema(
+        methods=["GET"],
+        responses={
+            status.HTTP_200_OK: OpenApiResponse(response=ChatListSerializer),
+            **common_responses_schema(status_codes=[status.HTTP_401_UNAUTHORIZED]),
+        },
+    )
+    def list(self, request: Request, *args, **kwargs) -> Response:
         return super().list(request, *args, **kwargs)
 
+    @extend_schema(
+        methods=["POST"],
+        request=ChatCreateSerializer,
+        responses={
+            status.HTTP_201_CREATED: OpenApiResponse(response=ChatCreateSerializer, description="Create a new chat"),
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(description="Bad request"),
+            **common_responses_schema(status_codes=[status.HTTP_401_UNAUTHORIZED]),
+        },
+    )
+    def create(self, request: Request, *args, **kwargs) -> Response:
+        return super().create(request, *args, **kwargs)
+
+    @extend_schema(
+        methods=["GET"],
+        responses={
+            status.HTTP_200_OK: OpenApiResponse(response=ChatRetrieveSerializer, description="Get a chat object data"),
+            **common_responses_schema(status_codes=[status.HTTP_401_UNAUTHORIZED, status.HTTP_404_NOT_FOUND]),
+        },
+    )
+    def retrieve(self, request: Request, *args, **kwargs) -> Response:
+        return super().retrieve(request, *args, **kwargs)
+
+    @extend_schema(
+        methods=["PUT"],
+        responses={
+            status.HTTP_200_OK: OpenApiResponse(response=ChatListSerializer, description="Update a chat data"),
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(description="Bad request"),
+            **common_responses_schema(status_codes=[status.HTTP_401_UNAUTHORIZED, status.HTTP_404_NOT_FOUND]),
+        },
+    )
+    def update(self, request: Request, *args, **kwargs) -> Response:
+        return super().update(request, *args, **kwargs)
+
+    @extend_schema(
+        methods=["GET"],
+        responses={
+            status.HTTP_200_OK: OpenApiResponse(response=ChatListSerializer, description="Update a chat data"),
+            **common_responses_schema(status_codes=[status.HTTP_401_UNAUTHORIZED, status.HTTP_404_NOT_FOUND]),
+        },
+    )
+    @action(methods=["GET"], detail=False)
+    def elected(self, request: Request, *args, **kwargs) -> Response:
+        return super().list(request, *args, **kwargs)
+
+    @extend_schema(
+        methods=["POST"],
+        request=ForwardElectedMessageSerializer,
+        responses={
+            status.HTTP_201_CREATED: OpenApiResponse(response=ChatListSerializer, description="Update a chat data"),
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(description="Bad request"),
+            **common_responses_schema(status_codes=[status.HTTP_401_UNAUTHORIZED, status.HTTP_404_NOT_FOUND]),
+        },
+    )
     @action(methods=["POST"], detail=False, url_path="elected/messages")
-    def add_elected_message(self, request: Request, *args, **kwargs):
+    def add_elected_message(self, request: Request, *args, **kwargs) -> Response:
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(status=status.HTTP_201_CREATED)
 
+    @extend_schema(
+        methods=["GET"],
+        responses={
+            status.HTTP_200_OK: ChatMemberSerializer,
+            **common_responses_schema(status_codes=[status.HTTP_401_UNAUTHORIZED]),
+        },
+    )
     @action(methods=["GET"], detail=True)
-    def members(self, request, pk, *args, **kwargs):
+    def members(self, request, *args, **kwargs) -> Response:
         return Response(self.get_serializer(self.get_object()).data)
 
+    @extend_schema(
+        methods=["GET"],
+        responses={
+            status.HTTP_200_OK: ChatMessageListSerializer,
+            **common_responses_schema(status_codes=[status.HTTP_401_UNAUTHORIZED]),
+        },
+    )
     @action(methods=["GET"], detail=True)
-    def messages(self, request, pk, *args, **kwargs):
+    def messages(self, request, *args, **kwargs) -> Response:
         return Response(self.get_serializer(self.get_object()).data)
 
+    @extend_schema(
+        methods=["POST"],
+        request=ChatMediaCreateSerializer,
+        responses={
+            status.HTTP_201_CREATED: ChatMediaCreateSerializer,
+            status.HTTP_400_BAD_REQUEST: OpenApiResponse(description="Bad request"),
+            **common_responses_schema(status_codes=[status.HTTP_401_UNAUTHORIZED]),
+        },
+    )
     @action(methods=["POST"], detail=True)
-    def medias(self, request, pk, *args, **kwargs):
+    def medias(self, request, *args, **kwargs) -> Response:
         return super().create(request)
 
     def get_serializer_class(self):
@@ -94,6 +180,7 @@ class MessageViewSet(
 ):
     serializer_class = ChatMessageSerializer
     queryset = Message.objects.all()
+    permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self):
         match self.action:
@@ -112,9 +199,10 @@ class PrivateChatViewSet(
 ):
     serializer_class = PrivateChatSerializer
     queryset = PrivateChat.objects.all()
+    permission_classes = [IsAuthenticated]
 
     @action(methods=["GET"], detail=True)
-    def messages(self, request, pk, *args, **kwargs):
+    def messages(self, request, *args, **kwargs) -> Response:
         return super().list(request, *args, **kwargs)
 
     def get_serializer_class(self):

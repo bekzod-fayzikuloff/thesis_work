@@ -6,19 +6,36 @@ info:
 paths:
   /api/auth/register/:
     post:
-      operationId: auth_register_create
-      description: Register view
+      operationId: authRegisterCreate
+      description: |-
+        Register view.
+
+        :argument
+            request(Request): drf request.Request - `django.http.request.HttpRequest`'s subclass - object
+        :return
+            Register endpoint response
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
       tags:
       - auth
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Register'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/Register'
           multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Register'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+          application/xml:
             schema:
               $ref: '#/components/schemas/Register'
         required: true
@@ -31,22 +48,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Register'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Register'
           description: ''
   /api/auth/token/:
     post:
-      operationId: auth_token_create
+      operationId: authTokenCreate
       description: SignInView with custom token claims
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
       tags:
       - auth
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SignInToken'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/SignInToken'
           multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SignInToken'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInToken'
+          application/xml:
             schema:
               $ref: '#/components/schemas/SignInToken'
         required: true
@@ -56,24 +87,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SignInToken'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/SignInToken'
           description: ''
   /api/auth/token/refresh/:
     post:
-      operationId: auth_token_refresh_create
+      operationId: authTokenRefreshCreate
       description: |-
         Takes a refresh type JSON web token and returns an access type JSON web
         token if the refresh token is valid.
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
       tags:
       - auth
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TokenRefresh'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/TokenRefresh'
           multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/xml:
             schema:
               $ref: '#/components/schemas/TokenRefresh'
         required: true
@@ -83,24 +128,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TokenRefresh'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
           description: ''
   /api/auth/token/verify/:
     post:
-      operationId: auth_token_verify_create
+      operationId: authTokenVerifyCreate
       description: |-
         Takes a token and indicates if it is valid.  This view provides no
         information about a token's fitness for a particular use.
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
       tags:
       - auth
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TokenVerify'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/TokenVerify'
           multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          application/xml:
             schema:
               $ref: '#/components/schemas/TokenVerify'
         required: true
@@ -110,32 +169,602 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TokenVerify'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/TokenVerify'
           description: ''
   /api/chats/:
     get:
-      operationId: chats_retrieve
+      operationId: chatsList
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
       tags:
       - chats
       security:
       - jwtAuth: []
-      - {}
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedChatListList'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/PaginatedChatListList'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+              examples:
+                Unauthorized:
+                  value:
+                    count: 123
+                    next: http://api.example.org/accounts/?page=4
+                    previous: http://api.example.org/accounts/?page=2
+                    results:
+                    - detail: Authentication credentials were not provided.
+                  description: Unauthorized request
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+          description: Unauthorized
+    post:
+      operationId: chatsCreate
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
+      tags:
+      - chats
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ChatCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ChatCreate'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatCreate'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/ChatCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatCreate'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ChatCreate'
+          description: Create a new chat
+        '400':
+          description: Bad request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+                  description: Unauthorized request
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+          description: Unauthorized
+  /api/chats/{id}/:
+    get:
+      operationId: chatsRetrieve
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Chat.
+        required: true
+      tags:
+      - chats
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatRetrieve'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ChatRetrieve'
+          description: Get a chat object data
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+                  description: Unauthorized request
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+          description: Unauthorized
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+              examples:
+                NotFound:
+                  value:
+                    detail: Not found.
+                  summary: Not Found
+                  description: Not Found
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: Not Found
+    put:
+      operationId: chatsUpdate
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Chat.
+        required: true
+      tags:
+      - chats
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ChatList'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ChatList'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatList'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/ChatList'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatList'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ChatList'
+          description: Update a chat data
+        '400':
+          description: Bad request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+                  description: Unauthorized request
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+          description: Unauthorized
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+              examples:
+                NotFound:
+                  value:
+                    detail: Not found.
+                  summary: Not Found
+                  description: Not Found
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: Not Found
+    patch:
+      operationId: chatsPartialUpdate
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Chat.
+        required: true
+      tags:
+      - chats
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedChatList'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedChatList'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedChatList'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/PatchedChatList'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatList'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ChatList'
+          description: ''
+  /api/chats/{id}/medias/:
+    post:
+      operationId: chatsMediasCreate
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Chat.
+        required: true
+      tags:
+      - chats
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ChatMediaCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ChatMediaCreate'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatMediaCreate'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/ChatMediaCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMediaCreate'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ChatMediaCreate'
+          description: ''
+        '400':
+          description: Bad request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+                  description: Unauthorized request
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+          description: Unauthorized
+  /api/chats/{id}/members/:
+    get:
+      operationId: chatsMembersRetrieve
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Chat.
+        required: true
+      tags:
+      - chats
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMember'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ChatMember'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+                  description: Unauthorized request
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+          description: Unauthorized
+  /api/chats/{id}/messages/:
+    get:
+      operationId: chatsMessagesRetrieve
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Chat.
+        required: true
+      tags:
+      - chats
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMessageList'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ChatMessageList'
+          description: ''
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+                  description: Unauthorized request
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+          description: Unauthorized
+  /api/chats/elected/:
+    get:
+      operationId: chatsElectedRetrieve
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
+      tags:
+      - chats
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatList'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ChatList'
+          description: Update a chat data
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+                  description: Unauthorized request
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+          description: Unauthorized
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+              examples:
+                NotFound:
+                  value:
+                    detail: Not found.
+                  summary: Not Found
+                  description: Not Found
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: Not Found
+  /api/chats/elected/messages/:
+    post:
+      operationId: chatsElectedMessagesCreate
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
+      tags:
+      - chats
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ForwardElectedMessage'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ForwardElectedMessage'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForwardElectedMessage'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/ForwardElectedMessage'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatList'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ChatList'
+          description: Update a chat data
+        '400':
+          description: Bad request
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+              examples:
+                Unauthorized:
+                  value:
+                    detail: Authentication credentials were not provided.
+                  description: Unauthorized request
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
+          description: Unauthorized
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+              examples:
+                NotFound:
+                  value:
+                    detail: Not found.
+                  summary: Not Found
+                  description: Not Found
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+          description: Not Found
   /api/comments/:
     post:
-      operationId: comments_create
+      operationId: commentsCreate
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
       tags:
       - comments
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CommentCreate'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/CommentCreate'
           multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CommentCreate'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentCreate'
+          application/xml:
             schema:
               $ref: '#/components/schemas/CommentCreate'
         required: true
@@ -145,6 +774,9 @@ paths:
         '201':
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/CommentCreate'
+            application/xml:
               schema:
                 $ref: '#/components/schemas/CommentCreate'
           description: Create a new post's comment
@@ -160,6 +792,9 @@ paths:
                   value:
                     detail: Authentication credentials were not provided.
                   description: Unauthorized request
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
           description: Unauthorized
         '404':
           content:
@@ -172,31 +807,44 @@ paths:
                     detail: Not found.
                   summary: Not Found
                   description: Not Found
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/NotFound'
           description: Not Found
         '204':
           description: No content
   /api/comments/{id}/:
     put:
-      operationId: comments_update
+      operationId: commentsUpdate
       parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
       - in: path
         name: id
         schema:
           type: integer
           title: ID записи
-        description: A unique integer value identifying this Комментарий.
+        description: A unique integer value identifying this Comment.
         required: true
       tags:
       - comments
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CommentUpdate'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/CommentUpdate'
           multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CommentUpdate'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentUpdate'
+          application/xml:
             schema:
               $ref: '#/components/schemas/CommentUpdate'
         required: true
@@ -206,6 +854,9 @@ paths:
         '200':
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/CommentCreate'
+            application/xml:
               schema:
                 $ref: '#/components/schemas/CommentCreate'
           description: ''
@@ -221,6 +872,9 @@ paths:
                   value:
                     detail: Authentication credentials were not provided.
                   description: Unauthorized request
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
           description: Unauthorized
         '404':
           content:
@@ -233,30 +887,43 @@ paths:
                     detail: Not found.
                   summary: Not Found
                   description: Not Found
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/NotFound'
           description: Not Found
         '204':
           description: No content
     patch:
-      operationId: comments_partial_update
+      operationId: commentsPartialUpdate
       parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
       - in: path
         name: id
         schema:
           type: integer
           title: ID записи
-        description: A unique integer value identifying this Комментарий.
+        description: A unique integer value identifying this Comment.
         required: true
       tags:
       - comments
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedCommentUpdate'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/PatchedCommentUpdate'
           multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCommentUpdate'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCommentUpdate'
+          application/xml:
             schema:
               $ref: '#/components/schemas/PatchedCommentUpdate'
       security:
@@ -265,6 +932,9 @@ paths:
         '200':
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/CommentCreate'
+            application/xml:
               schema:
                 $ref: '#/components/schemas/CommentCreate'
           description: ''
@@ -280,6 +950,9 @@ paths:
                   value:
                     detail: Authentication credentials were not provided.
                   description: Unauthorized request
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
           description: Unauthorized
         '404':
           content:
@@ -292,18 +965,28 @@ paths:
                     detail: Not found.
                   summary: Not Found
                   description: Not Found
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/NotFound'
           description: Not Found
         '204':
           description: No content
     delete:
-      operationId: comments_destroy
+      operationId: commentsDestroy
       parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
       - in: path
         name: id
         schema:
           type: integer
           title: ID записи
-        description: A unique integer value identifying this Комментарий.
+        description: A unique integer value identifying this Comment.
         required: true
       tags:
       - comments
@@ -314,18 +997,29 @@ paths:
           description: No content
   /api/followers/:
     post:
-      operationId: followers_create
+      operationId: followersCreate
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
       tags:
       - followers
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FollowerCreate'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/FollowerCreate'
           multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FollowerCreate'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FollowerCreate'
+          application/xml:
             schema:
               $ref: '#/components/schemas/FollowerCreate'
         required: true
@@ -335,6 +1029,9 @@ paths:
         '201':
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/FollowerCreate'
+            application/xml:
               schema:
                 $ref: '#/components/schemas/FollowerCreate'
           description: ''
@@ -348,17 +1045,27 @@ paths:
                   value:
                     detail: Authentication credentials were not provided.
                   description: Unauthorized request
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
           description: Unauthorized
   /api/followers/{id}/:
     delete:
-      operationId: followers_destroy
+      operationId: followersDestroy
       parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
       - in: path
         name: id
         schema:
           type: integer
           title: ID записи
-        description: A unique integer value identifying this Подписчик.
+        description: A unique integer value identifying this Follower.
         required: true
       tags:
       - followers
@@ -375,13 +1082,178 @@ paths:
                   value:
                     detail: Authentication credentials were not provided.
                   description: Unauthorized request
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
           description: Unauthorized
         '204':
           description: No content
+  /api/messages/:
+    post:
+      operationId: messagesCreate
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
+      tags:
+      - messages
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ChatMessageCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ChatMessageCreate'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatMessageCreate'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/ChatMessageCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMessageCreate'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ChatMessageCreate'
+          description: ''
+  /api/messages/{id}/:
+    put:
+      operationId: messagesUpdate
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
+      - in: path
+        name: id
+        schema:
+          type: integer
+          title: ID записи
+        description: A unique integer value identifying this Message.
+        required: true
+      tags:
+      - messages
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ChatMessageUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ChatMessageUpdate'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatMessageUpdate'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/ChatMessageUpdate'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMessageUpdate'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ChatMessageUpdate'
+          description: ''
+    patch:
+      operationId: messagesPartialUpdate
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
+      - in: path
+        name: id
+        schema:
+          type: integer
+          title: ID записи
+        description: A unique integer value identifying this Message.
+        required: true
+      tags:
+      - messages
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedChatMessageUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedChatMessageUpdate'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedChatMessageUpdate'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/PatchedChatMessageUpdate'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMessageUpdate'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ChatMessageUpdate'
+          description: ''
+    delete:
+      operationId: messagesDestroy
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
+      - in: path
+        name: id
+        schema:
+          type: integer
+          title: ID записи
+        description: A unique integer value identifying this Message.
+        required: true
+      tags:
+      - messages
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
   /api/posts/:
     get:
-      operationId: posts_list
+      operationId: postsList
       parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
       - name: page
         required: false
         in: query
@@ -398,20 +1270,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaginatedPostList'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/PaginatedPostList'
           description: ''
     post:
-      operationId: posts_create
+      operationId: postsCreate
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
       tags:
       - posts
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PostCreate'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/PostCreate'
           multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PostCreate'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCreate'
+          application/xml:
             schema:
               $ref: '#/components/schemas/PostCreate'
         required: true
@@ -423,17 +1309,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PostCreate'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/PostCreate'
           description: ''
   /api/posts/{id}/:
     get:
-      operationId: posts_retrieve
+      operationId: postsRetrieve
       parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
       - in: path
         name: id
         schema:
           type: integer
           title: ID записи
-        description: A unique integer value identifying this Пост.
+        description: A unique integer value identifying this Post.
         required: true
       tags:
       - posts
@@ -445,28 +1341,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Post'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Post'
           description: ''
     put:
-      operationId: posts_update
+      operationId: postsUpdate
       parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
       - in: path
         name: id
         schema:
           type: integer
           title: ID записи
-        description: A unique integer value identifying this Пост.
+        description: A unique integer value identifying this Post.
         required: true
       tags:
       - posts
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PostUpdate'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/PostUpdate'
           multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PostUpdate'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostUpdate'
+          application/xml:
             schema:
               $ref: '#/components/schemas/PostUpdate'
         required: true
@@ -476,30 +1385,43 @@ paths:
         '200':
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/PostUpdate'
+            application/xml:
               schema:
                 $ref: '#/components/schemas/PostUpdate'
           description: ''
     patch:
-      operationId: posts_partial_update
+      operationId: postsPartialUpdate
       parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
       - in: path
         name: id
         schema:
           type: integer
           title: ID записи
-        description: A unique integer value identifying this Пост.
+        description: A unique integer value identifying this Post.
         required: true
       tags:
       - posts
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedPostUpdate'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/PatchedPostUpdate'
           multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPostUpdate'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPostUpdate'
+          application/xml:
             schema:
               $ref: '#/components/schemas/PatchedPostUpdate'
       security:
@@ -510,16 +1432,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PostUpdate'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/PostUpdate'
           description: ''
     delete:
-      operationId: posts_destroy
+      operationId: postsDestroy
       parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
       - in: path
         name: id
         schema:
           type: integer
           title: ID записи
-        description: A unique integer value identifying this Пост.
+        description: A unique integer value identifying this Post.
         required: true
       tags:
       - posts
@@ -530,18 +1462,29 @@ paths:
           description: No response body
   /api/posts/medias/:
     post:
-      operationId: posts_medias_create
+      operationId: postsMediasCreate
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
       tags:
       - posts
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PostMediaCreate'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/PostMediaCreate'
           multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PostMediaCreate'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostMediaCreate'
+          application/xml:
             schema:
               $ref: '#/components/schemas/PostMediaCreate'
         required: true
@@ -553,11 +1496,148 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PostMediaCreate'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/PostMediaCreate'
+          description: ''
+  /api/privatechats/:
+    get:
+      operationId: privatechatsList
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - privatechats
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPrivateChatList'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/PaginatedPrivateChatList'
+          description: ''
+    post:
+      operationId: privatechatsCreate
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
+      tags:
+      - privatechats
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PrivateChatCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PrivateChatCreate'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PrivateChatCreate'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/PrivateChatCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrivateChatCreate'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/PrivateChatCreate'
+          description: ''
+  /api/privatechats/{id}/:
+    delete:
+      operationId: privatechatsDestroy
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Private chat.
+        required: true
+      tags:
+      - privatechats
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/privatechats/{id}/messages/:
+    get:
+      operationId: privatechatsMessagesRetrieve
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Private chat.
+        required: true
+      tags:
+      - privatechats
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMessageList'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ChatMessageList'
           description: ''
   /api/profiles/:
     get:
-      operationId: profiles_list
+      operationId: profilesList
       parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
       - name: page
         required: false
         in: query
@@ -572,6 +1652,9 @@ paths:
         '200':
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProfileListList'
+            application/xml:
               schema:
                 $ref: '#/components/schemas/PaginatedProfileListList'
           description: ''
@@ -589,17 +1672,27 @@ paths:
                     results:
                     - detail: Authentication credentials were not provided.
                   description: Unauthorized request
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
           description: Unauthorized
   /api/profiles/{id}/:
     get:
-      operationId: profiles_retrieve
+      operationId: profilesRetrieve
       parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
       - in: path
         name: id
         schema:
           type: integer
           title: ID записи
-        description: A unique integer value identifying this Профиль.
+        description: A unique integer value identifying this Profile.
         required: true
       tags:
       - profiles
@@ -609,6 +1702,9 @@ paths:
         '200':
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+            application/xml:
               schema:
                 $ref: '#/components/schemas/Profile'
           description: ''
@@ -622,6 +1718,9 @@ paths:
                   value:
                     detail: Authentication credentials were not provided.
                   description: Unauthorized request
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
           description: Unauthorized
         '404':
           content:
@@ -634,28 +1733,41 @@ paths:
                     detail: Not found.
                   summary: Not Found
                   description: Not Found
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/NotFound'
           description: Not Found
     put:
-      operationId: profiles_update
+      operationId: profilesUpdate
       parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
       - in: path
         name: id
         schema:
           type: integer
           title: ID записи
-        description: A unique integer value identifying this Профиль.
+        description: A unique integer value identifying this Profile.
         required: true
       tags:
       - profiles
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ProfileUpdate'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/ProfileUpdate'
           multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProfileUpdate'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileUpdate'
+          application/xml:
             schema:
               $ref: '#/components/schemas/ProfileUpdate'
       security:
@@ -664,6 +1776,9 @@ paths:
         '200':
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+            application/xml:
               schema:
                 $ref: '#/components/schemas/Profile'
           description: ''
@@ -679,6 +1794,9 @@ paths:
                   value:
                     detail: Authentication credentials were not provided.
                   description: Unauthorized request
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
           description: Unauthorized
         '404':
           content:
@@ -691,49 +1809,72 @@ paths:
                     detail: Not found.
                   summary: Not Found
                   description: Not Found
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/NotFound'
           description: Not Found
     patch:
-      operationId: profiles_partial_update
+      operationId: profilesPartialUpdate
       parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
       - in: path
         name: id
         schema:
           type: integer
           title: ID записи
-        description: A unique integer value identifying this Профиль.
+        description: A unique integer value identifying this Profile.
         required: true
       tags:
       - profiles
       requestBody:
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedProfile'
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/PatchedProfile'
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/PatchedProfile'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProfile'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/PatchedProfile'
       security:
       - jwtAuth: []
       responses:
         '200':
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+            application/xml:
               schema:
                 $ref: '#/components/schemas/Profile'
           description: ''
   /api/profiles/{id}/followed/:
     get:
-      operationId: profiles_followed_retrieve
+      operationId: profilesFollowedRetrieve
       parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
       - in: path
         name: id
         schema:
           type: integer
           title: ID записи
-        description: A unique integer value identifying this Профиль.
+        description: A unique integer value identifying this Profile.
         required: true
       tags:
       - profiles
@@ -743,6 +1884,9 @@ paths:
         '200':
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/FollowerList'
+            application/xml:
               schema:
                 $ref: '#/components/schemas/FollowerList'
           description: ''
@@ -756,17 +1900,27 @@ paths:
                   value:
                     detail: Authentication credentials were not provided.
                   description: Unauthorized request
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
           description: Unauthorized
   /api/profiles/{id}/followers/:
     get:
-      operationId: profiles_followers_retrieve
+      operationId: profilesFollowersRetrieve
       parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
       - in: path
         name: id
         schema:
           type: integer
           title: ID записи
-        description: A unique integer value identifying this Профиль.
+        description: A unique integer value identifying this Profile.
         required: true
       tags:
       - profiles
@@ -776,6 +1930,9 @@ paths:
         '200':
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/FollowerList'
+            application/xml:
               schema:
                 $ref: '#/components/schemas/FollowerList'
           description: ''
@@ -789,10 +1946,21 @@ paths:
                   value:
                     detail: Authentication credentials were not provided.
                   description: Unauthorized request
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
           description: Unauthorized
   /api/profiles/me/:
     get:
-      operationId: profiles_me_retrieve
+      operationId: profilesMeRetrieve
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
       tags:
       - profiles
       security:
@@ -801,6 +1969,9 @@ paths:
         '200':
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+            application/xml:
               schema:
                 $ref: '#/components/schemas/Profile'
           description: ''
@@ -814,10 +1985,21 @@ paths:
                   value:
                     detail: Authentication credentials were not provided.
                   description: Unauthorized request
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
           description: Unauthorized
   /api/profiles/me/delete/:
     delete:
-      operationId: profiles_me_delete_destroy
+      operationId: profilesMeDeleteDestroy
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - xml
       tags:
       - profiles
       security:
@@ -833,11 +2015,179 @@ paths:
                   value:
                     detail: Authentication credentials were not provided.
                   description: Unauthorized request
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/UnAuthorizedRequest'
           description: Unauthorized
         '204':
           description: No content
 components:
   schemas:
+    ChatCreate:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Время создания записи
+        updatedAt:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Время изменения записи
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          maxLength: 500
+      required:
+      - createdAt
+      - id
+      - title
+      - updatedAt
+    ChatList:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          maxLength: 500
+      required:
+      - id
+      - title
+    ChatMediaCreate:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          title: ID записи
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Время создания записи
+        updatedAt:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Время изменения записи
+        file:
+          type: string
+          format: uri
+      required:
+      - createdAt
+      - file
+      - id
+      - updatedAt
+    ChatMember:
+      type: object
+      properties:
+        members:
+          type: string
+          readOnly: true
+      required:
+      - members
+    ChatMessageCreate:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          title: ID записи
+        maker:
+          type: integer
+          title: ID записи
+          readOnly: true
+        chatType:
+          type: integer
+          readOnly: true
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Время создания записи
+        updatedAt:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Время изменения записи
+        content:
+          type: string
+          maxLength: 1000
+        chatId:
+          type: string
+          format: uuid
+        isActive:
+          type: boolean
+        answer:
+          type: integer
+          title: ID записи
+          nullable: true
+        medias:
+          type: array
+          items:
+            type: integer
+            title: ID записи
+      required:
+      - chatId
+      - chatType
+      - createdAt
+      - id
+      - maker
+      - updatedAt
+    ChatMessageList:
+      type: object
+      properties:
+        messages:
+          type: string
+          readOnly: true
+      required:
+      - messages
+    ChatMessageUpdate:
+      type: object
+      properties:
+        content:
+          type: string
+          maxLength: 1000
+        isActive:
+          type: boolean
+        answer:
+          type: integer
+          title: ID записи
+          nullable: true
+    ChatRetrieve:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          maxLength: 500
+        membersQuantity:
+          type: string
+          readOnly: true
+      required:
+      - id
+      - membersQuantity
+      - title
     CommentCreate:
       type: object
       properties:
@@ -855,6 +2205,10 @@ components:
         content:
           type: string
           maxLength: 500
+        answer:
+          type: integer
+          title: ID записи
+          nullable: true
       required:
       - content
       - creator
@@ -875,7 +2229,7 @@ components:
           type: integer
           readOnly: true
           title: ID записи
-        follow_to:
+        followTo:
           type: integer
           title: ID записи
         follower:
@@ -883,7 +2237,7 @@ components:
           title: ID записи
           readOnly: true
       required:
-      - follow_to
+      - followTo
       - follower
       - id
     FollowerList:
@@ -899,6 +2253,13 @@ components:
       required:
       - follower
       - id
+    ForwardElectedMessage:
+      type: object
+      properties:
+        messageId:
+          type: integer
+      required:
+      - messageId
     Nested:
       type: object
       properties:
@@ -906,12 +2267,12 @@ components:
           type: integer
           readOnly: true
           title: ID записи
-        created_at:
+        createdAt:
           type: string
           format: date-time
           readOnly: true
           title: Время создания записи
-        updated_at:
+        updatedAt:
           type: string
           format: date-time
           readOnly: true
@@ -927,9 +2288,9 @@ components:
           type: integer
           title: ID записи
       required:
-      - created_at
+      - createdAt
       - id
-      - updated_at
+      - updatedAt
       - user
     NotFound:
       type: object
@@ -938,6 +2299,26 @@ components:
           type: string
       required:
       - detail
+    PaginatedChatListList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChatList'
     PaginatedPostList:
       type: object
       properties:
@@ -958,6 +2339,26 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Post'
+    PaginatedPrivateChatList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PrivateChat'
     PaginatedProfileListList:
       type: object
       properties:
@@ -978,6 +2379,31 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProfileList'
+    PatchedChatList:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          maxLength: 500
+    PatchedChatMessageUpdate:
+      type: object
+      properties:
+        content:
+          type: string
+          maxLength: 1000
+        isActive:
+          type: boolean
+        answer:
+          type: integer
+          title: ID записи
+          nullable: true
     PatchedCommentUpdate:
       type: object
       properties:
@@ -991,12 +2417,12 @@ components:
           type: integer
           readOnly: true
           title: ID записи
-        created_at:
+        createdAt:
           type: string
           format: date-time
           readOnly: true
           title: Время создания записи
-        updated_at:
+        updatedAt:
           type: string
           format: date-time
           readOnly: true
@@ -1004,7 +2430,7 @@ components:
         description:
           type: string
           maxLength: 1000
-        is_active:
+        isActive:
           type: boolean
     PatchedProfile:
       type: object
@@ -1013,12 +2439,12 @@ components:
           type: integer
           readOnly: true
           title: ID записи
-        created_at:
+        createdAt:
           type: string
           format: date-time
           readOnly: true
           title: Время создания записи
-        updated_at:
+        updatedAt:
           type: string
           format: date-time
           readOnly: true
@@ -1037,12 +2463,12 @@ components:
           type: integer
           readOnly: true
           title: ID записи
-        created_at:
+        createdAt:
           type: string
           format: date-time
           readOnly: true
           title: Время создания записи
-        updated_at:
+        updatedAt:
           type: string
           format: date-time
           readOnly: true
@@ -1050,7 +2476,7 @@ components:
         description:
           type: string
           maxLength: 1000
-        is_active:
+        isActive:
           type: boolean
         creator:
           allOf:
@@ -1062,12 +2488,12 @@ components:
             $ref: '#/components/schemas/Nested'
           readOnly: true
       required:
-      - created_at
+      - createdAt
       - creator
       - description
       - id
       - medias
-      - updated_at
+      - updatedAt
     PostCreate:
       type: object
       properties:
@@ -1079,7 +2505,7 @@ components:
           items:
             type: integer
             title: ID записи
-        is_active:
+        isActive:
           type: boolean
         creator:
           type: integer
@@ -1096,12 +2522,12 @@ components:
           type: integer
           readOnly: true
           title: ID записи
-        created_at:
+        createdAt:
           type: string
           format: date-time
           readOnly: true
           title: Время создания записи
-        updated_at:
+        updatedAt:
           type: string
           format: date-time
           readOnly: true
@@ -1111,10 +2537,10 @@ components:
           format: uri
           pattern: (?:jpg|png|gif|bmp|ico|mp4|webm|avi)$
       required:
-      - created_at
+      - createdAt
       - file
       - id
-      - updated_at
+      - updatedAt
     PostUpdate:
       type: object
       properties:
@@ -1122,12 +2548,12 @@ components:
           type: integer
           readOnly: true
           title: ID записи
-        created_at:
+        createdAt:
           type: string
           format: date-time
           readOnly: true
           title: Время создания записи
-        updated_at:
+        updatedAt:
           type: string
           format: date-time
           readOnly: true
@@ -1135,13 +2561,52 @@ components:
         description:
           type: string
           maxLength: 1000
-        is_active:
+        isActive:
           type: boolean
       required:
-      - created_at
+      - createdAt
       - description
       - id
-      - updated_at
+      - updatedAt
+    PrivateChat:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        member:
+          type: string
+          readOnly: true
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Время создания записи
+        updatedAt:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Время изменения записи
+      required:
+      - createdAt
+      - id
+      - member
+      - updatedAt
+    PrivateChatCreate:
+      type: object
+      properties:
+        firstMember:
+          type: integer
+          title: ID записи
+          readOnly: true
+        secondMember:
+          type: integer
+          title: ID записи
+          nullable: true
+      required:
+      - firstMember
+      - secondMember
     Profile:
       type: object
       properties:
@@ -1149,12 +2614,12 @@ components:
           type: integer
           readOnly: true
           title: ID записи
-        created_at:
+        createdAt:
           type: string
           format: date-time
           readOnly: true
           title: Время создания записи
-        updated_at:
+        updatedAt:
           type: string
           format: date-time
           readOnly: true
@@ -1167,12 +2632,16 @@ components:
           type: string
           maxLength: 1000
       required:
-      - created_at
+      - createdAt
       - id
-      - updated_at
+      - updatedAt
     ProfileList:
       type: object
       properties:
+        id:
+          type: integer
+          readOnly: true
+          title: ID записи
         avatar:
           type: string
           format: uri
@@ -1181,6 +2650,7 @@ components:
           type: string
           readOnly: true
       required:
+      - id
       - username
     ProfileUpdate:
       type: object
@@ -1189,12 +2659,12 @@ components:
           type: integer
           readOnly: true
           title: ID записи
-        created_at:
+        createdAt:
           type: string
           format: date-time
           readOnly: true
           title: Время создания записи
-        updated_at:
+        updatedAt:
           type: string
           format: date-time
           readOnly: true
@@ -1207,9 +2677,9 @@ components:
           type: string
           maxLength: 1000
       required:
-      - created_at
+      - createdAt
       - id
-      - updated_at
+      - updatedAt
     Register:
       type: object
       description: User register serializer class
@@ -1220,7 +2690,7 @@ components:
         password:
           type: string
           writeOnly: true
-        password_confirm:
+        passwordConfirm:
           type: string
           writeOnly: true
         email:
@@ -1229,7 +2699,7 @@ components:
       required:
       - email
       - password
-      - password_confirm
+      - passwordConfirm
       - username
     SignInToken:
       type: object
