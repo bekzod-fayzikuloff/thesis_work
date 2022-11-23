@@ -8,3 +8,4 @@
 [![wakatime](https://wakatime.com/badge/github/bekzod-fayzikuloff/thesis_work.svg)](https://wakatime.com/badge/github/bekzod-fayzikuloff/thesis_work)
 [![code quality](https://github.com/bekzod-fayzikuloff/thesis_work/actions/workflows/pre-commit.yaml/badge.svg)](https://github.com/bekzod-fayzikuloff/thesis_work/actions/workflows/pre-commit.yaml)
 [![code test](https://github.com/bekzod-fayzikuloff/thesis_work/actions/workflows/tests.yaml/badge.svg)](https://github.com/bekzod-fayzikuloff/thesis_work/actions/workflows/tests.yaml)
+# Thesis
