@@ -4,6 +4,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
+from ...posts.models import Post
 from ..models import Follower, Profile
 from ..services import get_profile
 
@@ -15,6 +16,27 @@ class BaseProfileSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(BaseProfileSerializer):
+    username = serializers.SerializerMethodField()
+    posts_count = serializers.SerializerMethodField()
+    followers_count = serializers.SerializerMethodField()
+    followed_to_count = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_username(instance: Profile):
+        return instance.user.username
+
+    @staticmethod
+    def get_followers_count(instance: Profile):
+        return Follower.objects.filter(follow_to=instance).count()
+
+    @staticmethod
+    def get_followed_to_count(instance: Profile):
+        return Follower.objects.filter(follower=instance).count()
+
+    @staticmethod
+    def get_posts_count(instance: Profile):
+        return Post.objects.filter(creator=instance).count()
+
     class Meta:
         model = Profile
         exclude = ("user",)

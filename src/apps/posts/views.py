@@ -13,6 +13,7 @@ from .models import Comment, Post
 from .serializers.comments import CommentCreateSerializer, CommentSerializerT, CommentUpdateSerializer
 from .serializers.posts import (
     PostCreateSerializer,
+    PostListSerializer,
     PostMediaCreateSerializer,
     PostSerializer,
     PostSerializeT,
@@ -95,6 +96,8 @@ class PostViewSet(ModelViewSet):
 
     def get_serializer_class(self) -> type[PostSerializeT]:
         match self.action:
+            case "list":
+                return PostListSerializer
             case "create":
                 return PostCreateSerializer
             case "update":

@@ -28,6 +28,13 @@ class PostCreateSerializer(serializers.ModelSerializer):
         return result
 
 
+class PostListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ("id", "medias")
+        depth = 1
+
+
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
