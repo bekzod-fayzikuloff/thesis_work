@@ -1,3 +1,4 @@
+import abc
 from typing import TypeVar
 
 from drf_spectacular.types import OpenApiTypes
@@ -55,7 +56,7 @@ class ProfileListSerializer(BaseProfileSerializer):
         fields = ("id", "avatar", "username")
 
 
-class FollowerListSerializer(BaseProfileSerializer):
+class FollowerBaseListSerializer(BaseProfileSerializer):
     follower = serializers.SerializerMethodField()
 
     class Meta:
@@ -63,9 +64,46 @@ class FollowerListSerializer(BaseProfileSerializer):
         fields = ("id", "follower")
 
     @staticmethod
-    @extend_schema_field(ProfileListSerializer)
+    @abc.abstractmethod
     def get_follower(instance: Follower):
         return ProfileListSerializer(instance.follower).data
+
+
+class FeedPostListSerializer(BaseProfileSerializer):
+    creator_username = serializers.SerializerMethodField()
+    creator_id = serializers.SerializerMethodField()
+    creator_avatar = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_creator_username(instance: Post):
+        return instance.creator.user.username
+
+    @staticmethod
+    def get_creator_id(instance: Post):
+        return instance.creator.pk
+
+    @staticmethod
+    def get_creator_avatar(instance: Post):
+        if not instance.creator.avatar:
+            return None
+        return instance.creator.avatar.url
+
+    class Meta:
+        model = Post
+        exclude = ("creator",)
+        depth = 1
+
+
+class FollowerListSerializer(FollowerBaseListSerializer):
+    @staticmethod
+    def get_follower(instance: Follower):
+        return ProfileListSerializer(instance.follower).data
+
+
+class FollowedListSerializer(FollowerBaseListSerializer):
+    @staticmethod
+    def get_follower(instance: Follower):
+        return ProfileListSerializer(instance.follow_to).data
 
 
 class FollowerCreateSerializer(BaseProfileSerializer):

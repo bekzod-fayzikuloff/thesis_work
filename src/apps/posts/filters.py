@@ -4,7 +4,7 @@ from .models import Comment, Post
 
 
 class PostFilter(filters.FilterSet):
-    created_by = filters.CharFilter(field_name="creator__user__username", lookup_expr="icontains")
+    created_by = filters.NumberFilter(field_name="creator__id", lookup_expr="exact")
 
     class Meta:
         model = Post

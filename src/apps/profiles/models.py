@@ -1,3 +1,5 @@
+import random
+
 from django.db import models, transaction
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -12,6 +14,7 @@ class Profile(BaseModel):
     avatar = models.ImageField(upload_to="profiles/media/%Y/%m/%d/", blank=True, null=True)
     user = models.OneToOneField(to=User, on_delete=models.CASCADE)
     description = models.TextField(blank=True, max_length=1000)
+    is_private = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return f"{self.user.username}"
@@ -22,6 +25,14 @@ class Profile(BaseModel):
         ordering = ("-id",)
         verbose_name = "Profile"
         verbose_name_plural = "Profiles"
+
+    def get_feed_posts(self):
+        from ..posts.models import Post
+
+        followers = Follower.objects.filter(follower=self)
+        posts = list(Post.objects.filter(creator__in=[f.follow_to for f in followers]).order_by("-created_at")[:15])
+        random.shuffle(posts)
+        return posts
 
 
 class Follower(BaseModel):
