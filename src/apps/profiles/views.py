@@ -13,6 +13,8 @@ from common.openapi import common_responses_schema
 from .filters import FollowerFilter, ProfileFilter
 from .models import Follower, Profile
 from .serializers.profiles import (
+    FeedPostListSerializer,
+    FollowedListSerializer,
     FollowerCreateSerializer,
     FollowerListSerializer,
     ProfileListSerializer,
@@ -97,6 +99,13 @@ class ProfileViewSet(
         self.perform_delete(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @action(methods=["GET"], detail=True)
+    def feed(self, request: Request, *args, **kwargs) -> Response:
+        feed = get_object_or_404(Profile, *args, **kwargs)
+        posts_feeds = feed.get_feed_posts()
+        print(posts_feeds)
+        return Response(self.get_serializer(posts_feeds, many=True).data)
+
     @extend_schema(
         methods=["PUT", "PATCH"],
         request=ProfileUpdateSerializer,
@@ -121,7 +130,9 @@ class ProfileViewSet(
             case "followers":
                 return FollowerListSerializer
             case "followed":
-                return FollowerListSerializer
+                return FollowedListSerializer
+            case "feed":
+                return FeedPostListSerializer
             case _:
                 return ProfileSerializer
 

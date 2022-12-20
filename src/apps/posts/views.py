@@ -1,6 +1,7 @@
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -13,6 +14,7 @@ from .models import Comment, Post
 from .serializers.comments import CommentCreateSerializer, CommentSerializerT, CommentUpdateSerializer
 from .serializers.posts import (
     PostCreateSerializer,
+    PostListSerializer,
     PostMediaCreateSerializer,
     PostSerializer,
     PostSerializeT,
@@ -27,6 +29,7 @@ class CommentViewSet(
     serializer_class = CommentCreateSerializer
     permission_classes = [IsAuthenticated]
     filterset_class = CommentFilter
+    parser_classes = [JSONParser, MultiPartParser, FormParser]
 
     @extend_schema(
         methods=["POST"],
@@ -95,6 +98,8 @@ class PostViewSet(ModelViewSet):
 
     def get_serializer_class(self) -> type[PostSerializeT]:
         match self.action:
+            case "list":
+                return PostListSerializer
             case "create":
                 return PostCreateSerializer
             case "update":
