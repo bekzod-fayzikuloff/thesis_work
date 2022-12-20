@@ -5,7 +5,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
-from ...posts.models import Post
+from ...posts.models import Comment, Post, Reaction
 from ..models import Follower, Profile
 from ..services import get_profile
 
@@ -73,6 +73,9 @@ class FeedPostListSerializer(BaseProfileSerializer):
     creator_username = serializers.SerializerMethodField()
     creator_id = serializers.SerializerMethodField()
     creator_avatar = serializers.SerializerMethodField()
+    likes = serializers.SerializerMethodField()
+    post_is_liked = serializers.SerializerMethodField()
+    comments_quantity = serializers.SerializerMethodField()
 
     @staticmethod
     def get_creator_username(instance: Post):
@@ -87,6 +90,17 @@ class FeedPostListSerializer(BaseProfileSerializer):
         if not instance.creator.avatar:
             return None
         return instance.creator.avatar.url
+
+    @staticmethod
+    def get_likes(instance: Post):
+        return Reaction.objects.filter(post=instance, is_active=True, is_positive=True).count()
+
+    @staticmethod
+    def get_comments_quantity(instance: Post):
+        return Comment.objects.filter(post=instance).count()
+
+    def get_post_is_liked(self, instance: Post):
+        return bool(Reaction.objects.filter(post=instance, creator=get_profile(user=self.context["request"].user)))
 
     class Meta:
         model = Post
