@@ -4,9 +4,29 @@ from rest_framework import serializers
 
 from apps.profiles.services import get_profile
 
-from ..models import Post, PostMedia
+from ..models import Post, PostMedia, PostsGroup
 
 PostSerializeT = TypeVar("PostSerializeT", bound=serializers.ModelSerializer)
+
+
+class PostGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostsGroup
+        fields = "__all__"
+
+
+class PostGroupRetrieveSerializer(serializers.ModelSerializer):
+    posts = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_posts(instance: PostsGroup):
+        from ...profiles.serializers.profiles import FeedPostListSerializer
+
+        return FeedPostListSerializer(instance.posts, many=True).data
+
+    class Meta:
+        model = PostsGroup
+        fields = ("id", "title", "posts")
 
 
 class PostMediaCreateSerializer(serializers.ModelSerializer):

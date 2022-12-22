@@ -10,10 +10,12 @@ from rest_framework.viewsets import ModelViewSet
 from common.openapi import common_responses_schema
 
 from .filters import CommentFilter, PostFilter
-from .models import Comment, Post
+from .models import Comment, Post, PostsGroup
 from .serializers.comments import CommentCreateSerializer, CommentSerializerT, CommentUpdateSerializer
 from .serializers.posts import (
     PostCreateSerializer,
+    PostGroupRetrieveSerializer,
+    PostGroupSerializer,
     PostListSerializer,
     PostMediaCreateSerializer,
     PostSerializer,
@@ -110,3 +112,15 @@ class PostViewSet(ModelViewSet):
                 return PostMediaCreateSerializer
             case _:
                 return PostSerializer
+
+
+class PostGroupViewSet(ModelViewSet):
+    queryset = PostsGroup.objects.all()
+    serializer_class = PostGroupSerializer
+
+    def get_serializer_class(self):
+        match self.action:
+            case "retrieve":
+                return PostGroupRetrieveSerializer
+            case _:
+                return PostGroupSerializer

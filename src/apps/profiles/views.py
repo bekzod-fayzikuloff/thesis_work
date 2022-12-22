@@ -17,6 +17,7 @@ from .serializers.profiles import (
     FollowedListSerializer,
     FollowerCreateSerializer,
     FollowerListSerializer,
+    PostGroupSerializer,
     ProfileListSerializer,
     ProfileSerializer,
     ProfileSerializerType,
@@ -101,10 +102,15 @@ class ProfileViewSet(
 
     @action(methods=["GET"], detail=True)
     def feed(self, request: Request, *args, **kwargs) -> Response:
-        feed = get_object_or_404(Profile, *args, **kwargs)
-        posts_feeds = feed.get_feed_posts()
-        print(posts_feeds)
+        profile = get_object_or_404(Profile, *args, **kwargs)
+        posts_feeds = profile.get_feed_posts()
         return Response(self.get_serializer(posts_feeds, many=True).data)
+
+    @action(methods=["GET"], detail=True)
+    def post_groups(self, request, *args, **kwargs) -> Response:
+        profile = get_object_or_404(Profile, *args, **kwargs)
+        posts_groups = profile.get_posts_groups()
+        return Response(self.get_serializer(posts_groups, many=True).data)
 
     @extend_schema(
         methods=["PUT", "PATCH"],
@@ -133,6 +139,8 @@ class ProfileViewSet(
                 return FollowedListSerializer
             case "feed":
                 return FeedPostListSerializer
+            case "post_groups":
+                return PostGroupSerializer
             case _:
                 return ProfileSerializer
 
