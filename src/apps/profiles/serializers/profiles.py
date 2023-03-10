@@ -76,6 +76,7 @@ class FeedPostListSerializer(BaseProfileSerializer):
     likes = serializers.SerializerMethodField()
     post_is_liked = serializers.SerializerMethodField()
     post_is_saved = serializers.SerializerMethodField()
+    post_is_saved_groups = serializers.SerializerMethodField()
     comments_quantity = serializers.SerializerMethodField()
 
     @staticmethod
@@ -108,6 +109,17 @@ class FeedPostListSerializer(BaseProfileSerializer):
         except KeyError:
             return False
 
+    def get_post_is_saved_groups(self, instance: Post):
+        try:
+            return (
+                p_g.pk
+                for p_g in PostsGroup.objects.filter(
+                    creator=get_profile(user=self.context["request"].user), posts__in=[instance], title="saved"
+                )
+            )
+        except KeyError:
+            return []
+
     def get_post_is_liked(self, instance: Post):
         try:
             return bool(Reaction.objects.filter(post=instance, creator=get_profile(user=self.context["request"].user)))
@@ -121,9 +133,17 @@ class FeedPostListSerializer(BaseProfileSerializer):
 
 
 class PostGroupSerializer(BaseProfileSerializer):
+    posts_thumbnail = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_posts_thumbnail(instance: PostsGroup):
+        from ...posts.serializers.posts import PostListSerializer
+
+        return PostListSerializer(instance.posts.first()).data
+
     class Meta:
         model = PostsGroup
-        fields = "__all__"
+        exclude = ("posts",)
 
 
 class FollowerListSerializer(FollowerBaseListSerializer):

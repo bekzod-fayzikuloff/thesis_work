@@ -18,7 +18,8 @@ urlpatterns = [
     path("profiles/", include("apps.profiles.urls")),
     path("privatechats/", include(include_object("apps.chats.urls:private_chats_urlpatterns"))),
     path("posts/", include(include_object("apps.posts.urls:posts_urlpatterns"))),
-    path("posts-grops/", include(include_object("apps.posts.urls:posts_groups_urlpatterns"))),
+    path("reactions/", include(include_object("apps.posts.urls:reactions_urlpatterns"))),
+    path("posts-groups/", include(include_object("apps.posts.urls:posts_groups_urlpatterns"))),
     path("comments/", include(include_object("apps.posts.urls:comments_urlpatterns"))),
     path("docs/", include(docs_urlpatterns)),
 ]
