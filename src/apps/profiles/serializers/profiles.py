@@ -5,7 +5,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
-from ...posts.models import Comment, Post, Reaction
+from ...posts.models import Comment, Post, PostsGroup, Reaction
 from ..models import Follower, Profile
 from ..services import get_profile
 
@@ -75,6 +75,8 @@ class FeedPostListSerializer(BaseProfileSerializer):
     creator_avatar = serializers.SerializerMethodField()
     likes = serializers.SerializerMethodField()
     post_is_liked = serializers.SerializerMethodField()
+    post_is_saved = serializers.SerializerMethodField()
+    post_is_saved_groups = serializers.SerializerMethodField()
     comments_quantity = serializers.SerializerMethodField()
 
     @staticmethod
@@ -99,13 +101,49 @@ class FeedPostListSerializer(BaseProfileSerializer):
     def get_comments_quantity(instance: Post):
         return Comment.objects.filter(post=instance).count()
 
+    def get_post_is_saved(self, instance: Post):
+        try:
+            return bool(
+                PostsGroup.objects.filter(creator=get_profile(user=self.context["request"].user), posts__in=[instance])
+            )
+        except KeyError:
+            return False
+
+    def get_post_is_saved_groups(self, instance: Post):
+        try:
+            return (
+                p_g.pk
+                for p_g in PostsGroup.objects.filter(
+                    creator=get_profile(user=self.context["request"].user), posts__in=[instance], title="saved"
+                )
+            )
+        except KeyError:
+            return []
+
     def get_post_is_liked(self, instance: Post):
-        return bool(Reaction.objects.filter(post=instance, creator=get_profile(user=self.context["request"].user)))
+        try:
+            return bool(Reaction.objects.filter(post=instance, creator=get_profile(user=self.context["request"].user)))
+        except KeyError:
+            return False
 
     class Meta:
         model = Post
         exclude = ("creator",)
         depth = 1
+
+
+class PostGroupSerializer(BaseProfileSerializer):
+    posts_thumbnail = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_posts_thumbnail(instance: PostsGroup):
+        from ...posts.serializers.posts import PostListSerializer
+
+        return PostListSerializer(instance.posts.first()).data
+
+    class Meta:
+        model = PostsGroup
+        exclude = ("posts",)
 
 
 class FollowerListSerializer(FollowerBaseListSerializer):

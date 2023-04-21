@@ -34,6 +34,11 @@ class Profile(BaseModel):
         random.shuffle(posts)
         return posts
 
+    def get_posts_groups(self):
+        from ..posts.models import PostsGroup
+
+        return PostsGroup.objects.filter(creator=self)
+
 
 class Follower(BaseModel):
     """Follower model definition"""
@@ -61,6 +66,9 @@ class Follower(BaseModel):
 def create_profile(sender, **kwargs) -> None:  # noqa
     if kwargs.get("created"):
         from ..chats.models import Elected
+        from ..posts.models import PostsGroup
 
         with transaction.atomic():
-            Elected.objects.create(creator=Profile.objects.create(user=kwargs.get("instance")))
+            profile = Profile.objects.create(user=kwargs.get("instance"))
+            Elected.objects.create(creator=profile)
+            PostsGroup.objects.create(title="saved", creator=profile)

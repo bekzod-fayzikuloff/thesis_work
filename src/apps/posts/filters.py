@@ -13,7 +13,8 @@ class PostFilter(filters.FilterSet):
 
 class CommentFilter(filters.FilterSet):
     created_by = filters.CharFilter(field_name="creator__user__username", lookup_expr="icontains")
+    post_id = filters.NumberFilter(field_name="post__pk", lookup_expr="exact")
 
     class Meta:
         model = Comment
-        fields = ("created_by", "content")
+        fields = ("created_by", "content", "post_id")
